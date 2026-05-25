@@ -73,3 +73,20 @@ The pipeline leverages specialized autonomous agents working in orchestration to
 └── sql_engine.py               # Interface processing execution tasks securely using Psycopg2 & Pandas
  ```
 
+## Quick Start
+### Dependency Management:
+```bash
+pip install pandas langchain-aws psycopg2-binary openai python-dotenv
+```
+
+### Setting Up Environment Secrets: 
+
+Create a standard configuration .env file within the base repository directory:
+```bash
+DB_HOST=localhost
+DB_PORT=5432
+DB_USER=your_username
+DB_PASS=your_password
+DB_NAME_DEFAULT=postgres
+DB_NAME_NEW=spider_mini_test
+```
