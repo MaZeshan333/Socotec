@@ -1,0 +1,482 @@
+[
+  {
+    "id": 1,
+    "category": "Basic Metadata",
+    "question": "List all project names located in 'France'.",
+    "sql": "SELECT name FROM projects WHERE country = 'France';"
+  },
+  {
+    "id": 2,
+    "category": "Basic Metadata",
+    "question": "Retrieve all sites with an operating rate higher than 0.8.",
+    "sql": "SELECT * FROM sites WHERE operating_rate > 0.8;"
+  },
+  {
+    "id": 3,
+    "category": "Basic Metadata",
+    "question": "Count the number of projects per country.",
+    "sql": "SELECT country, COUNT(*) FROM projects GROUP BY country;"
+  },
+  {
+    "id": 4,
+    "category": "Basic Metadata",
+    "question": "Find all projects that started after January 1, 2023.",
+    "sql": "SELECT * FROM projects WHERE start_date > '2023-01-01';"
+  },
+  {
+    "id": 5,
+    "category": "Basic Metadata",
+    "question": "List gateways installed at an altitude (z) greater than 100 meters.",
+    "sql": "SELECT name, z FROM gateways WHERE z > 100;"
+  },
+  {
+    "id": 6,
+    "category": "Basic Metadata",
+    "question": "Show all sites that are marked as deleted.",
+    "sql": "SELECT * FROM sites WHERE deleted = TRUE;"
+  },
+  {
+    "id": 7,
+    "category": "Basic Metadata",
+    "question": "Calculate the average operating rate of sites grouped by city.",
+    "sql": "SELECT city, AVG(operating_rate) FROM projects p JOIN sites s ON p.project_id = s.project_id GROUP BY city;"
+  },
+  {
+    "id": 8,
+    "category": "Basic Metadata",
+    "question": "Find gateways with serial numbers starting with 'SN'.",
+    "sql": "SELECT * FROM gateways WHERE serial_number LIKE 'SN%';"
+  },
+  {
+    "id": 9,
+    "category": "Basic Metadata",
+    "question": "List projects that have no description provided.",
+    "sql": "SELECT * FROM projects WHERE description IS NULL OR description = '';"
+  },
+  {
+    "id": 10,
+    "category": "Basic Metadata",
+    "question": "Retrieve all currently active configurations.",
+    "sql": "SELECT * FROM configs WHERE active = TRUE;"
+  },
+  {
+    "id": 11,
+    "category": "Basic Metadata",
+    "question": "Count gateways grouped by their time zone.",
+    "sql": "SELECT time_zone, COUNT(*) FROM gateways GROUP BY time_zone;"
+  },
+  {
+    "id": 12,
+    "category": "Basic Metadata",
+    "question": "Find sites with a provisional end date before 2025.",
+    "sql": "SELECT * FROM sites WHERE previsional_end < '2025-01-01';"
+  },
+  {
+    "id": 13,
+    "category": "Basic Metadata",
+    "question": "List gateway names and installation dates, ordered by newest first.",
+    "sql": "SELECT name, installation_date FROM gateways ORDER BY installation_date DESC;"
+  },
+  {
+    "id": 14,
+    "category": "Basic Metadata",
+    "question": "Select the first 10 'Industrial' type sites.",
+    "sql": "SELECT * FROM sites WHERE type = 'Industrial' LIMIT 10;"
+  },
+  {
+    "id": 15,
+    "category": "Basic Metadata",
+    "question": "Count total unique client companies in the system.",
+    "sql": "SELECT COUNT(DISTINCT client_company_name) FROM projects;"
+  },
+  {
+    "id": 16,
+    "category": "Joins & Relationships",
+    "question": "List all site names belonging to each project name.",
+    "sql": "SELECT p.name AS project_name, s.name AS site_name FROM projects p JOIN sites s ON p.project_id = s.project_id;"
+  },
+  {
+    "id": 17,
+    "category": "Joins & Relationships",
+    "question": "Get the site_id currently associated with each gateway.",
+    "sql": "SELECT gateway_id, site_id FROM site_gateways;"
+  },
+  {
+    "id": 18,
+    "category": "Joins & Relationships",
+    "question": "Find serial numbers of all gateways belonging to 'Project_Alpha'.",
+    "sql": "SELECT g.serial_number FROM gateways g JOIN site_gateways sg ON g.gateway_id = sg.gateway_id JOIN sites s ON sg.site_id = s.site_id JOIN projects p ON s.project_id = p.project_id WHERE p.name = 'Project_Alpha';"
+  },
+  {
+    "id": 19,
+    "category": "Joins & Relationships",
+    "question": "Find sites that have no gateways associated with them.",
+    "sql": "SELECT s.name FROM sites s LEFT JOIN site_gateways sg ON s.site_id = sg.site_id WHERE sg.gateway_id IS NULL;"
+  },
+  {
+    "id": 20,
+    "category": "Joins & Relationships",
+    "question": "Retrieve config file names for a specific site (ID 5).",
+    "sql": "SELECT c.file_name FROM configs c JOIN site_gateways sg ON c.gateway_id = sg.gateway_id WHERE sg.site_id = 5;"
+  },
+  {
+    "id": 21,
+    "category": "Joins & Relationships",
+    "question": "Report project name, site name, and gateway name for all active hardware.",
+    "sql": "SELECT p.name, s.name, g.name FROM projects p JOIN sites s ON p.project_id = s.project_id JOIN site_gateways sg ON s.site_id = sg.site_id JOIN gateways g ON sg.gateway_id = g.gateway_id;"
+  },
+  {
+    "id": 22,
+    "category": "Joins & Relationships",
+    "question": "Count the total number of gateways deployed under each project.",
+    "sql": "SELECT p.name, COUNT(sg.gateway_id) FROM projects p JOIN sites s ON p.project_id = s.project_id JOIN site_gateways sg ON s.site_id = sg.site_id GROUP BY p.name;"
+  },
+  {
+    "id": 23,
+    "category": "Joins & Relationships",
+    "question": "Find all gateways installed in the city of 'Paris'.",
+    "sql": "SELECT g.* FROM gateways g JOIN site_gateways sg ON g.gateway_id = sg.gateway_id JOIN sites s ON sg.site_id = s.site_id JOIN projects p ON s.project_id = p.project_id WHERE p.city = 'Paris';"
+  },
+  {
+    "id": 24,
+    "category": "Joins & Relationships",
+    "question": "List site names using the 'MQTT' transfer protocol.",
+    "sql": "SELECT DISTINCT s.name FROM sites s JOIN site_gateways sg ON s.site_id = sg.site_id JOIN gateways g ON sg.gateway_id = g.gateway_id WHERE g.transfer_protocol = 'MQTT';"
+  },
+  {
+    "id": 25,
+    "category": "Joins & Relationships",
+    "question": "Get the latest configuration version for each gateway.",
+    "sql": "SELECT DISTINCT ON (gateway_id) gateway_id, file_name, created_at FROM configs ORDER BY gateway_id, created_at DESC;"
+  },
+  {
+    "id": 26,
+    "category": "Joins & Relationships",
+    "question": "Find gateways shared across multiple sites.",
+    "sql": "SELECT gateway_id FROM site_gateways GROUP BY gateway_id HAVING COUNT(site_id) > 1;"
+  },
+  {
+    "id": 27,
+    "category": "Joins & Relationships",
+    "question": "Retrieve names of parent sites via the main_site field.",
+    "sql": "SELECT s1.name AS sub_site, s2.name AS parent_site FROM sites s1 JOIN sites s2 ON s1.main_site = s2.site_id;"
+  },
+  {
+    "id": 28,
+    "category": "Joins & Relationships",
+    "question": "Find the most common power supply type per country.",
+    "sql": "SELECT country, power_supply, COUNT(*) FROM projects p JOIN sites s ON p.project_id = s.project_id JOIN site_gateways sg ON s.site_id = sg.site_id JOIN gateways g ON sg.gateway_id = g.gateway_id GROUP BY country, power_supply;"
+  },
+  {
+    "id": 29,
+    "category": "Joins & Relationships",
+    "question": "List gateways for 'Client_A' with inactive configurations.",
+    "sql": "SELECT g.name FROM gateways g JOIN configs c ON g.gateway_id = c.gateway_id JOIN site_gateways sg ON g.gateway_id = sg.gateway_id JOIN sites s ON sg.site_id = s.site_id JOIN projects p ON s.project_id = p.project_id WHERE p.client_company_name = 'Client_A' AND c.active = FALSE;"
+  },
+  {
+    "id": 30,
+    "category": "Joins & Relationships",
+    "question": "Count total raw measurements per site.",
+    "sql": "SELECT sg.site_id, COUNT(rm.measurement_id) FROM site_gateways sg JOIN configs c ON sg.gateway_id = c.gateway_id JOIN raw_measurements rm ON c.gateway_id = rm.sensor_id GROUP BY sg.site_id;"
+  },
+  {
+    "id": 31,
+    "category": "Aggregations",
+    "question": "Calculate the overall average measurement value.",
+    "sql": "SELECT AVG(value) FROM raw_measurements;"
+  },
+  {
+    "id": 32,
+    "category": "Aggregations",
+    "question": "Find the top 5 variable_ids with the highest measurement values.",
+    "sql": "SELECT variable_id, MAX(value) FROM raw_measurements GROUP BY variable_id ORDER BY MAX(value) DESC LIMIT 5;"
+  },
+  {
+    "id": 33,
+    "category": "Aggregations",
+    "question": "Count measurements per sensor in the last 24 hours.",
+    "sql": "SELECT sensor_id, COUNT(*) FROM raw_measurements WHERE timestamp > NOW() - INTERVAL '24 hours' GROUP BY sensor_id;"
+  },
+  {
+    "id": 34,
+    "category": "Aggregations",
+    "question": "Calculate data throughput (count) per gateway.",
+    "sql": "SELECT sensor_id, COUNT(*) FROM raw_measurements GROUP BY sensor_id;"
+  },
+  {
+    "id": 35,
+    "category": "Aggregations",
+    "question": "Find variable_ids where the standard deviation of values is greater than 10.",
+    "sql": "SELECT variable_id FROM raw_measurements GROUP BY variable_id HAVING STDDEV(value) > 10;"
+  },
+  {
+    "id": 36,
+    "category": "Aggregations",
+    "question": "Count measurements received per day.",
+    "sql": "SELECT DATE(timestamp), COUNT(*) FROM raw_measurements GROUP BY DATE(timestamp);"
+  },
+  {
+    "id": 37,
+    "category": "Aggregations",
+    "question": "Get the spread (max - min) of values for each site.",
+    "sql": "SELECT sg.site_id, MAX(rm.value) - MIN(rm.value) FROM site_gateways sg JOIN raw_measurements rm ON sg.gateway_id = rm.sensor_id GROUP BY sg.site_id;"
+  },
+  {
+    "id": 38,
+    "category": "Aggregations",
+    "question": "Top 3 sites by data volume.",
+    "sql": "SELECT sg.site_id, COUNT(rm.measurement_id) FROM site_gateways sg JOIN raw_measurements rm ON sg.gateway_id = rm.sensor_id GROUP BY sg.site_id ORDER BY COUNT DESC LIMIT 3;"
+  },
+  {
+    "id": 39,
+    "category": "Aggregations",
+    "question": "Average operating rate of all sites per project.",
+    "sql": "SELECT project_id, AVG(operating_rate) FROM sites GROUP BY project_id;"
+  },
+  {
+    "id": 40,
+    "category": "Aggregations",
+    "question": "Count configurations where regex_variables is not null.",
+    "sql": "SELECT COUNT(*) FROM configs WHERE regex_variables IS NOT NULL;"
+  },
+  {
+    "id": 41,
+    "category": "Aggregations",
+    "question": "Find sensor IDs with an average measurement value above 100.",
+    "sql": "SELECT sensor_id FROM raw_measurements GROUP BY sensor_id HAVING AVG(value) > 100;"
+  },
+  {
+    "id": 42,
+    "category": "Aggregations",
+    "question": "Count gateway installations per month.",
+    "sql": "SELECT DATE_TRUNC('month', installation_date), COUNT(*) FROM gateways GROUP BY 1;"
+  },
+  {
+    "id": 43,
+    "category": "Aggregations",
+    "question": "Percentage of measurements with values between 0 and 1.",
+    "sql": "SELECT (COUNT(*) FILTER (WHERE value BETWEEN 0 AND 1) * 100.0 / COUNT(*)) FROM raw_measurements;"
+  },
+  {
+    "id": 44,
+    "category": "Aggregations",
+    "question": "Retrieve the most recent value for every variable ID.",
+    "sql": "SELECT DISTINCT ON (variable_id) variable_id, value, timestamp FROM raw_measurements ORDER BY variable_id, timestamp DESC;"
+  },
+  {
+    "id": 45,
+    "category": "Aggregations",
+    "question": "Count duplicate timestamps in raw_measurements.",
+    "sql": "SELECT timestamp, COUNT(*) FROM raw_measurements GROUP BY timestamp HAVING COUNT(*) > 1;"
+  },
+  {
+    "id": 46,
+    "category": "Time-Series",
+    "question": "Retrieve all measurements from the last hour.",
+    "sql": "SELECT * FROM raw_measurements WHERE timestamp > NOW() - INTERVAL '1 hour';"
+  },
+  {
+    "id": 47,
+    "category": "Time-Series",
+    "question": "Hourly average value for the last week.",
+    "sql": "SELECT DATE_TRUNC('hour', timestamp), AVG(value) FROM raw_measurements WHERE timestamp > NOW() - INTERVAL '7 days' GROUP BY 1 ORDER BY 1;"
+  },
+  {
+    "id": 48,
+    "category": "Time-Series",
+    "question": "Detect gateways that haven't sent data in the last 12 hours.",
+    "sql": "SELECT gateway_id FROM gateways WHERE gateway_id NOT IN (SELECT sensor_id FROM raw_measurements WHERE timestamp > NOW() - INTERVAL '12 hours');"
+  },
+  {
+    "id": 49,
+    "category": "Time-Series",
+    "question": "Retrieve data for variable_id 10 between 12:00 and 13:00 yesterday.",
+    "sql": "SELECT * FROM raw_measurements WHERE variable_id = 10 AND timestamp BETWEEN (CURRENT_DATE - 1 + TIME '12:00') AND (CURRENT_DATE - 1 + TIME '13:00');"
+  },
+  {
+    "id": 50,
+    "category": "Time-Series",
+    "question": "Calculate delta between current and previous measurement value using window functions.",
+    "sql": "SELECT value, value - LAG(value) OVER (PARTITION BY sensor_id ORDER BY timestamp) AS delta FROM raw_measurements;"
+  },
+  {
+    "id": 51,
+    "category": "Time-Series",
+    "question": "5-point moving average for each sensor.",
+    "sql": "SELECT sensor_id, AVG(value) OVER (PARTITION BY sensor_id ORDER BY timestamp ROWS BETWEEN 4 PRECEDING AND CURRENT ROW) FROM raw_measurements;"
+  },
+  {
+    "id": 52,
+    "category": "Time-Series",
+    "question": "Find sequences where value exceeds 50 three times consecutively.",
+    "sql": "SELECT * FROM (SELECT value, sensor_id, timestamp, COUNT(*) OVER (PARTITION BY sensor_id ORDER BY timestamp) as row_num FROM raw_measurements WHERE value > 50) t WHERE row_num >= 3;"
+  },
+  {
+    "id": 53,
+    "category": "Time-Series",
+    "question": "Identify the first gateway to upload data each day.",
+    "sql": "SELECT DISTINCT ON (DATE(timestamp)) DATE(timestamp), sensor_id FROM raw_measurements ORDER BY DATE(timestamp), timestamp ASC;"
+  },
+  {
+    "id": 54,
+    "category": "Time-Series",
+    "question": "Calculate average frequency (time gap) of data uploads per sensor.",
+    "sql": "SELECT sensor_id, AVG(diff) FROM (SELECT sensor_id, timestamp - LAG(timestamp) OVER (PARTITION BY sensor_id ORDER BY timestamp) as diff FROM raw_measurements) t GROUP BY sensor_id;"
+  },
+  {
+    "id": 55,
+    "category": "Time-Series",
+    "question": "Day with highest volatility (max - min) per month.",
+    "sql": "SELECT DATE_TRUNC('month', timestamp), DATE(timestamp), MAX(value) - MIN(value) as volatility FROM raw_measurements GROUP BY 1, 2 ORDER BY volatility DESC;"
+  },
+  {
+    "id": 56,
+    "category": "Time-Series",
+    "question": "Count measurements taken during non-working hours (18:00 to 08:00).",
+    "sql": "SELECT COUNT(*) FROM raw_measurements WHERE EXTRACT(HOUR FROM timestamp) >= 18 OR EXTRACT(HOUR FROM timestamp) < 8;"
+  },
+  {
+    "id": 57,
+    "category": "Time-Series",
+    "question": "Calculate total uptime days for each site since start_date.",
+    "sql": "SELECT site_id, CURRENT_DATE - start_date AS days_active FROM sites;"
+  },
+  {
+    "id": 58,
+    "category": "Time-Series",
+    "question": "Identify 'gaps' longer than 1 hour in data streams.",
+    "sql": "SELECT sensor_id, prev_ts, timestamp FROM (SELECT sensor_id, timestamp, LAG(timestamp) OVER (PARTITION BY sensor_id ORDER BY timestamp) as prev_ts FROM raw_measurements) t WHERE timestamp - prev_ts > INTERVAL '1 hour';"
+  },
+  {
+    "id": 59,
+    "category": "Time-Series",
+    "question": "Quarterly summary of project operating rates.",
+    "sql": "SELECT DATE_TRUNC('quarter', start_date), AVG(operating_rate) FROM sites GROUP BY 1;"
+  },
+  {
+    "id": 60,
+    "category": "Time-Series",
+    "question": "Show first and last upload timestamp for each gateway.",
+    "sql": "SELECT sensor_id, MIN(timestamp), MAX(timestamp) FROM raw_measurements GROUP BY sensor_id;"
+  },
+  {
+    "id": 61,
+    "category": "Complex Logic",
+    "question": "Extract specific key from JSONB regex_variables in configs.",
+    "sql": "SELECT regex_variables->>'specific_key' FROM configs;"
+  },
+  {
+    "id": 62,
+    "category": "Complex Logic",
+    "question": "Find gateways where configuration JSON contains the word 'filter'.",
+    "sql": "SELECT * FROM configs WHERE regex_variables::text LIKE '%filter%';"
+  },
+  {
+    "id": 63,
+    "category": "Complex Logic",
+    "question": "Calculate Euclidean distance between two gateways (ID 1 and 2).",
+    "sql": "SELECT SQRT(POWER(g1.x - g2.x, 2) + POWER(g1.y - g2.y, 2)) FROM gateways g1, gateways g2 WHERE g1.gateway_id = 1 AND g2.gateway_id = 2;"
+  },
+  {
+    "id": 64,
+    "category": "Complex Logic",
+    "question": "Find gateways within a bounding box (x: 0-10, y: 0-10).",
+    "sql": "SELECT * FROM gateways WHERE x BETWEEN 0 AND 10 AND y BETWEEN 0 AND 10;"
+  },
+  {
+    "id": 65,
+    "category": "Complex Logic",
+    "question": "List all deleted sites and their gateway IDs.",
+    "sql": "SELECT s.site_id, sg.gateway_id FROM sites s JOIN site_gateways sg ON s.site_id = sg.site_id WHERE s.deleted = TRUE;"
+  },
+  {
+    "id": 66,
+    "category": "Complex Logic",
+    "question": "Logic for setting operating_rate to 0 for sites past previsional_end.",
+    "sql": "UPDATE sites SET operating_rate = 0 WHERE previsional_end < CURRENT_DATE;"
+  },
+  {
+    "id": 67,
+    "category": "Complex Logic",
+    "question": "Find sites with sensor counts above the system average.",
+    "sql": "SELECT site_id FROM site_gateways GROUP BY site_id HAVING COUNT(gateway_id) > (SELECT COUNT(gateway_id)::float / COUNT(DISTINCT site_id) FROM site_gateways);"
+  },
+  {
+    "id": 68,
+    "category": "Complex Logic",
+    "question": "Use CTE to generate a health report (site name + latest value).",
+    "sql": "WITH LatestVals AS (SELECT DISTINCT ON (sensor_id) sensor_id, value FROM raw_measurements ORDER BY sensor_id, timestamp DESC) SELECT s.name, lv.value FROM sites s JOIN site_gateways sg ON s.site_id = sg.site_id JOIN LatestVals lv ON sg.gateway_id = lv.sensor_id;"
+  },
+  {
+    "id": 69,
+    "category": "Complex Logic",
+    "question": "Find gateway configs with file extensions ending in '.xml'.",
+    "sql": "SELECT * FROM configs WHERE file_name LIKE '%.xml';"
+  },
+  {
+    "id": 70,
+    "category": "Complex Logic",
+    "question": "Retrieve project details for the site with the highest ID.",
+    "sql": "SELECT p.* FROM projects p JOIN sites s ON p.project_id = s.project_id WHERE s.site_id = (SELECT MAX(site_id) FROM sites);"
+  },
+  {
+    "id": 71,
+    "category": "Complex Logic",
+    "question": "Find configs where ftp_ip is in the 192.168.1.x subnet.",
+    "sql": "SELECT * FROM configs WHERE ftp_ip LIKE '192.168.1.%';"
+  },
+  {
+    "id": 72,
+    "category": "Complex Logic",
+    "question": "Identify gateways that have a config but no measurements.",
+    "sql": "SELECT c.gateway_id FROM configs c LEFT JOIN raw_measurements rm ON c.gateway_id = rm.sensor_id WHERE rm.measurement_id IS NULL;"
+  },
+  {
+    "id": 73,
+    "category": "Complex Logic",
+    "question": "Rank sites within each project based on site_id.",
+    "sql": "SELECT name, project_id, RANK() OVER (PARTITION BY project_id ORDER BY site_id) FROM sites;"
+  },
+  {
+    "id": 74,
+    "category": "Complex Logic",
+    "question": "Calculate rank of gateways based on altitude (z).",
+    "sql": "SELECT name, z, RANK() OVER (ORDER BY z DESC) FROM gateways;"
+  },
+  {
+    "id": 75,
+    "category": "Complex Logic",
+    "question": "Find projects mentioning 'Solar' in the description.",
+    "sql": "SELECT * FROM projects WHERE description ILIKE '%Solar%';"
+  },
+  {
+    "id": 76,
+    "category": "Complex Logic",
+    "question": "Find active (not deleted) gateway IDs in 'China'.",
+    "sql": "SELECT sg.gateway_id FROM site_gateways sg JOIN sites s ON sg.site_id = s.site_id JOIN projects p ON s.project_id = p.project_id WHERE p.country = 'China' AND s.deleted = FALSE;"
+  },
+  {
+    "id": 77,
+    "category": "Complex Logic",
+    "question": "Create a view for site status summary.",
+    "sql": "CREATE VIEW site_status AS SELECT site_id, name, operating_rate, deleted FROM sites;"
+  },
+  {
+    "id": 78,
+    "category": "Complex Logic",
+    "question": "Use COALESCE to handle null descriptions in projects.",
+    "sql": "SELECT name, COALESCE(description, 'No description provided') FROM projects;"
+  },
+  {
+    "id": 79,
+    "category": "Complex Logic",
+    "question": "Serial numbers of gateways active in the last 5 minutes.",
+    "sql": "SELECT g.serial_number FROM gateways g JOIN raw_measurements rm ON g.gateway_id = rm.sensor_id WHERE rm.timestamp > NOW() - INTERVAL '5 minutes';"
+  },
+  {
+    "id": 80,
+    "category": "Complex Logic",
+    "question": "Total measurement count per project since inception.",
+    "sql": "SELECT p.name, COUNT(rm.measurement_id) FROM projects p JOIN sites s ON p.project_id = s.project_id JOIN site_gateways sg ON s.site_id = sg.site_id JOIN raw_measurements rm ON sg.gateway_id = rm.sensor_id GROUP BY p.name;"
+  }
+]
