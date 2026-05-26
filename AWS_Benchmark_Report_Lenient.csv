@@ -1,0 +1,670 @@
+ID,Category,Question,Expected SQL,Agent SQL,Is Match,Error Note
+1,Basic Metadata,List all project names located in 'France'.,SELECT name FROM projects WHERE country = 'France';,"SELECT name
+FROM projects
+WHERE country = 'France';",True,
+2,Basic Metadata,Retrieve all sites with an operating rate higher than 0.8.,SELECT * FROM sites WHERE operating_rate > 0.8;,"SELECT *
+FROM sites
+WHERE operating_rate > 0.8 AND deleted = FALSE;",True,
+3,Basic Metadata,Count the number of projects per country.,"SELECT country, COUNT(*) FROM projects GROUP BY country;","SELECT country, COUNT(*) FROM projects GROUP BY country;",True,
+4,Basic Metadata,"Find all projects that started after January 1, 2023.",SELECT * FROM projects WHERE start_date > '2023-01-01';,"SELECT project_id, name, country, client_company_name, time_zone, city, start_date, description
+FROM projects
+WHERE start_date > '2023-01-01'",True,
+5,Basic Metadata,List gateways installed at an altitude (z) greater than 100 meters.,"SELECT name, z FROM gateways WHERE z > 100;","SELECT gateway_id, name, serial_number, transfer_protocol, power_supply, installation_date, x, y, z, time_zone, created_at
+FROM gateways
+WHERE z > 100",True,
+6,Basic Metadata,Show all sites that are marked as deleted.,SELECT * FROM sites WHERE deleted = TRUE;,"SELECT *
+FROM sites
+WHERE deleted = TRUE;",True,
+7,Basic Metadata,Calculate the average operating rate of sites grouped by city.,"SELECT city, AVG(operating_rate) FROM projects p JOIN sites s ON p.project_id = s.project_id GROUP BY city;","SELECT p.city, AVG(s.operating_rate) 
+FROM sites s
+JOIN projects p ON s.project_id = p.project_id
+WHERE s.deleted = FALSE
+GROUP BY p.city",True,
+8,Basic Metadata,Find gateways with serial numbers starting with 'SN'.,SELECT * FROM gateways WHERE serial_number LIKE 'SN%';,"SELECT *
+FROM gateways
+WHERE serial_number LIKE 'SN%'",True,
+9,Basic Metadata,List projects that have no description provided.,SELECT * FROM projects WHERE description IS NULL OR description = '';,"SELECT project_id, name, country, client_company_name, time_zone, city, start_date, description
+FROM projects
+WHERE description IS NULL OR description = '';",True,
+10,Basic Metadata,Retrieve all currently active configurations.,SELECT * FROM configs WHERE active = TRUE;,"SELECT config_id, gateway_id, file_name, ftp_ip, regex_variables, active, created_at
+FROM configs
+WHERE active = TRUE;",True,
+11,Basic Metadata,Count gateways grouped by their time zone.,"SELECT time_zone, COUNT(*) FROM gateways GROUP BY time_zone;","SELECT time_zone, COUNT(*) 
+FROM gateways 
+GROUP BY time_zone;",True,
+12,Basic Metadata,Find sites with a provisional end date before 2025.,SELECT * FROM sites WHERE previsional_end < '2025-01-01';,"SELECT site_id, name, type, extent, start_date, previsional_end, project_id
+FROM sites
+WHERE previsional_end < '2025-01-01' AND deleted = FALSE;",False,"Column count mismatch & Key column missing! Expected: ['site_id', 'name', 'type', 'extent', 'start_date', 'previsional_end', 'project_id', 'created_at', 'updated_at', 'deleted', 'operating_rate', 'main_site'], Missing: ['created_at', 'updated_at', 'deleted', 'operating_rate', 'main_site']"
+13,Basic Metadata,"List gateway names and installation dates, ordered by newest first.","SELECT name, installation_date FROM gateways ORDER BY installation_date DESC;","SELECT name, installation_date
+FROM gateways
+ORDER BY installation_date DESC NULLS LAST;",True,
+14,Basic Metadata,Select the first 10 'Industrial' type sites.,SELECT * FROM sites WHERE type = 'Industrial' LIMIT 10;,"SELECT *
+FROM sites
+WHERE type = 'Industrial'
+LIMIT 10;",True,
+15,Basic Metadata,Count total unique client companies in the system.,SELECT COUNT(DISTINCT client_company_name) FROM projects;,"SELECT COUNT(DISTINCT client_company_name)
+FROM projects;",True,
+16,Joins & Relationships,List all site names belonging to each project name.,"SELECT p.name AS project_name, s.name AS site_name FROM projects p JOIN sites s ON p.project_id = s.project_id;","SELECT p.name, s.name
+FROM projects p
+JOIN sites s ON p.project_id = s.project_id
+WHERE s.deleted = FALSE
+ORDER BY p.name, s.name;",True,
+17,Joins & Relationships,Get the site_id currently associated with each gateway.,"SELECT gateway_id, site_id FROM site_gateways;","SELECT site_id, gateway_id
+FROM site_gateways;",False,"Value matrix mismatch. Target rows: 19, Matched: 0"
+18,Joins & Relationships,Find serial numbers of all gateways belonging to 'Project_Alpha'.,SELECT g.serial_number FROM gateways g JOIN site_gateways sg ON g.gateway_id = sg.gateway_id JOIN sites s ON sg.site_id = s.site_id JOIN projects p ON s.project_id = p.project_id WHERE p.name = 'Project_Alpha';,"SELECT g.serial_number
+FROM gateways g
+JOIN site_gateways sg ON g.gateway_id = sg.gateway_id
+JOIN sites s ON sg.site_id = s.site_id
+JOIN projects p ON s.project_id = p.project_id
+WHERE p.name = 'Project_Alpha';",True,
+19,Joins & Relationships,Find sites that have no gateways associated with them.,SELECT s.name FROM sites s LEFT JOIN site_gateways sg ON s.site_id = sg.site_id WHERE sg.gateway_id IS NULL;,"SELECT s.site_id, s.name, s.type, s.project_id
+FROM sites s
+LEFT JOIN site_gateways sg ON s.site_id = sg.site_id
+WHERE sg.gateway_id IS NULL
+  AND s.deleted = FALSE;",True,
+20,Joins & Relationships,Retrieve config file names for a specific site (ID 5).,SELECT c.file_name FROM configs c JOIN site_gateways sg ON c.gateway_id = sg.gateway_id WHERE sg.site_id = 5;,"SELECT c.file_name
+FROM configs c
+JOIN gateways g ON c.gateway_id = g.gateway_id
+JOIN site_gateways sg ON g.gateway_id = sg.gateway_id
+WHERE sg.site_id = 5 AND c.active = true;",True,
+21,Joins & Relationships,"Report project name, site name, and gateway name for all active hardware.","SELECT p.name, s.name, g.name FROM projects p JOIN sites s ON p.project_id = s.project_id JOIN site_gateways sg ON s.site_id = sg.site_id JOIN gateways g ON sg.gateway_id = g.gateway_id;","SELECT 
+    p.name,
+    s.name,
+    g.name
+FROM projects p
+JOIN sites s ON p.project_id = s.project_id
+JOIN site_gateways sg ON s.site_id = sg.site_id
+JOIN gateways g ON sg.gateway_id = g.gateway_id
+WHERE s.deleted = FALSE",True,
+22,Joins & Relationships,Count the total number of gateways deployed under each project.,"SELECT p.name, COUNT(sg.gateway_id) FROM projects p JOIN sites s ON p.project_id = s.project_id JOIN site_gateways sg ON s.site_id = sg.site_id GROUP BY p.name;","SELECT 
+    p.project_id,
+    p.name,
+    COUNT(DISTINCT g.gateway_id) AS count
+FROM projects p
+LEFT JOIN sites s ON p.project_id = s.project_id
+LEFT JOIN site_gateways sg ON s.site_id = sg.site_id
+LEFT JOIN gateways g ON sg.gateway_id = g.gateway_id
+GROUP BY p.project_id, p.name
+ORDER BY p.project_id;",True,
+23,Joins & Relationships,Find all gateways installed in the city of 'Paris'.,SELECT g.* FROM gateways g JOIN site_gateways sg ON g.gateway_id = sg.gateway_id JOIN sites s ON sg.site_id = s.site_id JOIN projects p ON s.project_id = p.project_id WHERE p.city = 'Paris';,"SELECT g.*
+FROM gateways g
+JOIN site_gateways sg ON g.gateway_id = sg.gateway_id
+JOIN sites s ON sg.site_id = s.site_id
+JOIN projects p ON s.project_id = p.project_id
+WHERE p.city = 'Paris';",True,
+24,Joins & Relationships,List site names using the 'MQTT' transfer protocol.,SELECT DISTINCT s.name FROM sites s JOIN site_gateways sg ON s.site_id = sg.site_id JOIN gateways g ON sg.gateway_id = g.gateway_id WHERE g.transfer_protocol = 'MQTT';,"SELECT DISTINCT s.name
+FROM sites s
+JOIN site_gateways sg ON s.site_id = sg.site_id
+JOIN gateways g ON sg.gateway_id = g.gateway_id
+WHERE g.transfer_protocol = 'MQTT';",True,
+25,Joins & Relationships,Get the latest configuration version for each gateway.,"SELECT DISTINCT ON (gateway_id) gateway_id, file_name, created_at FROM configs ORDER BY gateway_id, created_at DESC;","SELECT DISTINCT ON (gateway_id) 
+    config_id,
+    gateway_id,
+    file_name,
+    ftp_ip,
+    regex_variables,
+    active,
+    created_at
+FROM configs
+ORDER BY gateway_id, created_at DESC;",True,
+26,Joins & Relationships,Find gateways shared across multiple sites.,SELECT gateway_id FROM site_gateways GROUP BY gateway_id HAVING COUNT(site_id) > 1;,"SELECT g.gateway_id, g.name, g.serial_number, COUNT(DISTINCT sg.site_id) AS site_count
+FROM gateways g
+JOIN site_gateways sg ON g.gateway_id = sg.gateway_id
+GROUP BY g.gateway_id, g.name, g.serial_number
+HAVING COUNT(DISTINCT sg.site_id) > 1
+ORDER BY site_count DESC, g.gateway_id;",True,
+27,Joins & Relationships,Retrieve names of parent sites via the main_site field.,"SELECT s1.name AS sub_site, s2.name AS parent_site FROM sites s1 JOIN sites s2 ON s1.main_site = s2.site_id;","SELECT parent.name
+FROM sites child
+JOIN sites parent ON child.main_site = parent.site_id
+WHERE child.main_site IS NOT NULL;",False,"Column count mismatch & Key column missing! Expected: ['sub_site', 'parent_site'], Missing: ['sub_site', 'parent_site']"
+28,Joins & Relationships,Find the most common power supply type per country.,"SELECT country, power_supply, COUNT(*) FROM projects p JOIN sites s ON p.project_id = s.project_id JOIN site_gateways sg ON s.site_id = sg.site_id JOIN gateways g ON sg.gateway_id = g.gateway_id GROUP BY country, power_supply;","WITH power_supply_counts AS (
+  SELECT 
+    p.country,
+    g.power_supply,
+    COUNT(*) as cnt
+  FROM gateways g
+  JOIN site_gateways sg ON g.gateway_id = sg.gateway_id
+  JOIN sites s ON sg.site_id = s.site_id
+  JOIN projects p ON s.project_id = p.project_id
+  WHERE g.power_supply IS NOT NULL
+  GROUP BY p.country, g.power_supply
+),
+ranked AS (
+  SELECT 
+    country,
+    power_supply,
+    cnt,
+    ROW_NUMBER() OVER (PARTITION BY country ORDER BY cnt DESC) as rn
+  FROM power_supply_counts
+)
+SELECT 
+  country,
+  power_supply,
+  cnt
+FROM ranked
+WHERE rn = 1
+ORDER BY country;",True,
+29,Joins & Relationships,List gateways for 'Client_A' with inactive configurations.,SELECT g.name FROM gateways g JOIN configs c ON g.gateway_id = c.gateway_id JOIN site_gateways sg ON g.gateway_id = sg.gateway_id JOIN sites s ON sg.site_id = s.site_id JOIN projects p ON s.project_id = p.project_id WHERE p.client_company_name = 'Client_A' AND c.active = FALSE;,"SELECT DISTINCT g.gateway_id, g.name, g.serial_number, g.transfer_protocol, g.power_supply, g.installation_date, g.time_zone
+FROM gateways g
+JOIN configs c ON g.gateway_id = c.gateway_id
+JOIN site_gateways sg ON g.gateway_id = sg.gateway_id
+JOIN sites s ON sg.site_id = s.site_id
+JOIN projects p ON s.project_id = p.project_id
+WHERE p.client_company_name = 'Client_A'
+AND c.active = false",True,
+30,Joins & Relationships,Count total raw measurements per site.,"SELECT sg.site_id, COUNT(rm.measurement_id) FROM site_gateways sg JOIN configs c ON sg.gateway_id = c.gateway_id JOIN raw_measurements rm ON c.gateway_id = rm.sensor_id GROUP BY sg.site_id;","SELECT s.site_id, s.name, COUNT(rm.measurement_id)
+FROM sites s
+LEFT JOIN site_gateways sg ON s.site_id = sg.site_id
+LEFT JOIN gateways g ON sg.gateway_id = g.gateway_id
+LEFT JOIN configs c ON g.gateway_id = c.gateway_id
+LEFT JOIN variables v ON c.config_id = v.config_id
+LEFT JOIN raw_measurements rm ON v.variable_id = rm.variable_id
+WHERE s.deleted = FALSE
+GROUP BY s.site_id, s.name
+ORDER BY s.site_id;",False,"Agent generated SQL failed to execute: 错误:  关系 ""variables"" 不存在
+LINE 6: LEFT JOIN variables v ON c.config_id = v.config_id
+                  ^
+"
+31,Aggregations,Calculate the overall average measurement value.,SELECT AVG(value) FROM raw_measurements;,SELECT AVG(value) FROM raw_measurements,True,
+32,Aggregations,Find the top 5 variable_ids with the highest measurement values.,"SELECT variable_id, MAX(value) FROM raw_measurements GROUP BY variable_id ORDER BY MAX(value) DESC LIMIT 5;","SELECT variable_id, value
+FROM raw_measurements
+ORDER BY value DESC
+LIMIT 5;",True,
+33,Aggregations,Count measurements per sensor in the last 24 hours.,"SELECT sensor_id, COUNT(*) FROM raw_measurements WHERE timestamp > NOW() - INTERVAL '24 hours' GROUP BY sensor_id;","SELECT sensor_id, COUNT(*) 
+FROM raw_measurements 
+WHERE timestamp >= NOW() - INTERVAL '24 hours' 
+GROUP BY sensor_id",True,
+34,Aggregations,Calculate data throughput (count) per gateway.,"SELECT sensor_id, COUNT(*) FROM raw_measurements GROUP BY sensor_id;","SELECT g.gateway_id, g.name, COUNT(rm.measurement_id)
+FROM gateways g
+LEFT JOIN configs c ON g.gateway_id = c.gateway_id
+LEFT JOIN variables v ON c.config_id = v.config_id
+LEFT JOIN raw_measurements rm ON v.variable_id = rm.variable_id
+GROUP BY g.gateway_id, g.name
+ORDER BY g.gateway_id;",False,"Agent generated SQL failed to execute: 错误:  关系 ""variables"" 不存在
+LINE 4: LEFT JOIN variables v ON c.config_id = v.config_id
+                  ^
+"
+35,Aggregations,Find variable_ids where the standard deviation of values is greater than 10.,SELECT variable_id FROM raw_measurements GROUP BY variable_id HAVING STDDEV(value) > 10;,"SELECT variable_id
+FROM raw_measurements
+GROUP BY variable_id
+HAVING STDDEV(value) > 10",True,
+36,Aggregations,Count measurements received per day.,"SELECT DATE(timestamp), COUNT(*) FROM raw_measurements GROUP BY DATE(timestamp);","SELECT DATE(timestamp) AS day, COUNT(*) AS count
+FROM raw_measurements
+GROUP BY DATE(timestamp)
+ORDER BY day;",True,
+37,Aggregations,Get the spread (max - min) of values for each site.,"SELECT sg.site_id, MAX(rm.value) - MIN(rm.value) FROM site_gateways sg JOIN raw_measurements rm ON sg.gateway_id = rm.sensor_id GROUP BY sg.site_id;","SELECT 
+    s.site_id,
+    s.name,
+    MAX(rm.value) - MIN(rm.value) AS spread
+FROM sites s
+JOIN site_gateways sg ON s.site_id = sg.site_id
+JOIN configs c ON sg.gateway_id = c.gateway_id
+JOIN raw_measurements rm ON c.config_id IN (
+    SELECT config_id 
+    FROM configs 
+    WHERE gateway_id = sg.gateway_id
+)
+WHERE rm.sensor_id IN (
+    SELECT sensor_id 
+    FROM raw_measurements
+)
+GROUP BY s.site_id, s.name
+ORDER BY s.site_id;",False,"Column count mismatch & Key column missing! Expected: ['site_id', '?column?'], Missing: ['?column?']"
+38,Aggregations,Top 3 sites by data volume.,"SELECT sg.site_id, COUNT(rm.measurement_id) FROM site_gateways sg JOIN raw_measurements rm ON sg.gateway_id = rm.sensor_id GROUP BY sg.site_id ORDER BY COUNT DESC LIMIT 3;","SELECT s.site_id, s.name, COUNT(*) as count
+FROM sites s
+JOIN site_gateways sg ON s.site_id = sg.site_id
+JOIN gateways g ON sg.gateway_id = g.gateway_id
+JOIN configs c ON g.gateway_id = c.gateway_id
+JOIN raw_measurements rm ON c.config_id = rm.variable_id
+GROUP BY s.site_id, s.name
+ORDER BY count DESC
+LIMIT 3",True,
+39,Aggregations,Average operating rate of all sites per project.,"SELECT project_id, AVG(operating_rate) FROM sites GROUP BY project_id;","SELECT 
+    p.project_id,
+    p.name,
+    AVG(s.operating_rate) AS avg
+FROM 
+    projects p
+    JOIN sites s ON p.project_id = s.project_id
+WHERE 
+    s.deleted = false
+GROUP BY 
+    p.project_id, p.name
+ORDER BY 
+    p.project_id;",True,
+40,Aggregations,Count configurations where regex_variables is not null.,SELECT COUNT(*) FROM configs WHERE regex_variables IS NOT NULL;,"SELECT COUNT(*) 
+FROM configs 
+WHERE regex_variables IS NOT NULL;",True,
+41,Aggregations,Find sensor IDs with an average measurement value above 100.,SELECT sensor_id FROM raw_measurements GROUP BY sensor_id HAVING AVG(value) > 100;,"SELECT sensor_id
+FROM raw_measurements
+GROUP BY sensor_id
+HAVING AVG(value) > 100;",True,
+42,Aggregations,Count gateway installations per month.,"SELECT DATE_TRUNC('month', installation_date), COUNT(*) FROM gateways GROUP BY 1;","SELECT DATE_TRUNC('month', installation_date) AS month, COUNT(*) AS count
+FROM gateways
+WHERE installation_date IS NOT NULL
+GROUP BY DATE_TRUNC('month', installation_date)
+ORDER BY month;",False,Agent returned an empty dataset while Expected has data.
+43,Aggregations,Percentage of measurements with values between 0 and 1.,SELECT (COUNT(*) FILTER (WHERE value BETWEEN 0 AND 1) * 100.0 / COUNT(*)) FROM raw_measurements;,"SELECT 
+    COUNT(*) FILTER (WHERE value BETWEEN 0 AND 1) * 100.0 / COUNT(*) 
+FROM raw_measurements",True,
+44,Aggregations,Retrieve the most recent value for every variable ID.,"SELECT DISTINCT ON (variable_id) variable_id, value, timestamp FROM raw_measurements ORDER BY variable_id, timestamp DESC;","SELECT DISTINCT ON (variable_id) 
+    variable_id, 
+    sensor_id, 
+    value, 
+    timestamp, 
+    measurement_id
+FROM raw_measurements
+ORDER BY variable_id, timestamp DESC;",True,
+45,Aggregations,Count duplicate timestamps in raw_measurements.,"SELECT timestamp, COUNT(*) FROM raw_measurements GROUP BY timestamp HAVING COUNT(*) > 1;","SELECT timestamp, COUNT(*) AS count
+FROM raw_measurements
+GROUP BY timestamp
+HAVING COUNT(*) > 1
+ORDER BY count DESC, timestamp;",True,
+46,Time-Series,Retrieve all measurements from the last hour.,SELECT * FROM raw_measurements WHERE timestamp > NOW() - INTERVAL '1 hour';,"SELECT measurement_id, variable_id, sensor_id, value, timestamp
+FROM raw_measurements
+WHERE timestamp >= NOW() - INTERVAL '1 hour';",True,
+47,Time-Series,Hourly average value for the last week.,"SELECT DATE_TRUNC('hour', timestamp), AVG(value) FROM raw_measurements WHERE timestamp > NOW() - INTERVAL '7 days' GROUP BY 1 ORDER BY 1;","SELECT 
+    date_trunc('hour', timestamp) AS hour,
+    AVG(value) AS avg
+FROM raw_measurements
+WHERE timestamp >= NOW() - INTERVAL '7 days'
+GROUP BY date_trunc('hour', timestamp)
+ORDER BY hour;",True,
+48,Time-Series,Detect gateways that haven't sent data in the last 12 hours.,SELECT gateway_id FROM gateways WHERE gateway_id NOT IN (SELECT sensor_id FROM raw_measurements WHERE timestamp > NOW() - INTERVAL '12 hours');,"SELECT g.gateway_id, g.name, g.serial_number, MAX(rm.timestamp) AS last_data_timestamp
+FROM gateways g
+LEFT JOIN configs c ON g.gateway_id = c.gateway_id
+LEFT JOIN raw_measurements rm ON c.config_id IN (
+    SELECT config_id 
+    FROM configs 
+    WHERE gateway_id = g.gateway_id
+)
+GROUP BY g.gateway_id, g.name, g.serial_number
+HAVING MAX(rm.timestamp) < NOW() - INTERVAL '12 hours' OR MAX(rm.timestamp) IS NULL",True,
+49,Time-Series,Retrieve data for variable_id 10 between 12:00 and 13:00 yesterday.,SELECT * FROM raw_measurements WHERE variable_id = 10 AND timestamp BETWEEN (CURRENT_DATE - 1 + TIME '12:00') AND (CURRENT_DATE - 1 + TIME '13:00');,"SELECT *
+FROM raw_measurements
+WHERE variable_id = 10
+  AND timestamp >= (CURRENT_DATE - INTERVAL '1 day') + INTERVAL '12 hours'
+  AND timestamp < (CURRENT_DATE - INTERVAL '1 day') + INTERVAL '13 hours'",True,
+50,Time-Series,Calculate delta between current and previous measurement value using window functions.,"SELECT value, value - LAG(value) OVER (PARTITION BY sensor_id ORDER BY timestamp) AS delta FROM raw_measurements;","SELECT 
+    measurement_id,
+    variable_id,
+    sensor_id,
+    value,
+    timestamp,
+    LAG(value) OVER (PARTITION BY variable_id, sensor_id ORDER BY timestamp) AS previous_value,
+    value - LAG(value) OVER (PARTITION BY variable_id, sensor_id ORDER BY timestamp) AS delta
+FROM raw_measurements
+ORDER BY variable_id, sensor_id, timestamp;",True,
+51,Time-Series,5-point moving average for each sensor.,"SELECT sensor_id, AVG(value) OVER (PARTITION BY sensor_id ORDER BY timestamp ROWS BETWEEN 4 PRECEDING AND CURRENT ROW) FROM raw_measurements;","SELECT 
+    sensor_id,
+    timestamp,
+    value,
+    AVG(value) OVER (
+        PARTITION BY sensor_id 
+        ORDER BY timestamp 
+        ROWS BETWEEN 4 PRECEDING AND CURRENT ROW
+    ) AS moving_avg
+FROM raw_measurements
+ORDER BY sensor_id, timestamp;",False,"Column count mismatch & Key column missing! Expected: ['sensor_id', 'avg'], Missing: ['avg']"
+52,Time-Series,Find sequences where value exceeds 50 three times consecutively.,"SELECT * FROM (SELECT value, sensor_id, timestamp, COUNT(*) OVER (PARTITION BY sensor_id ORDER BY timestamp) as row_num FROM raw_measurements WHERE value > 50) t WHERE row_num >= 3;","WITH ordered_measurements AS (
+  SELECT 
+    measurement_id,
+    variable_id,
+    sensor_id,
+    value,
+    timestamp,
+    LAG(value, 1) OVER (PARTITION BY variable_id, sensor_id ORDER BY timestamp) AS prev_value_1,
+    LAG(value, 2) OVER (PARTITION BY variable_id, sensor_id ORDER BY timestamp) AS prev_value_2
+  FROM raw_measurements
+)
+SELECT 
+  measurement_id,
+  variable_id,
+  sensor_id,
+  value,
+  timestamp
+FROM ordered_measurements
+WHERE value > 50 
+  AND prev_value_1 > 50 
+  AND prev_value_2 > 50
+ORDER BY variable_id, sensor_id, timestamp;",True,
+53,Time-Series,Identify the first gateway to upload data each day.,"SELECT DISTINCT ON (DATE(timestamp)) DATE(timestamp), sensor_id FROM raw_measurements ORDER BY DATE(timestamp), timestamp ASC;","WITH daily_first_uploads AS (
+  SELECT 
+    DATE(rm.timestamp) AS upload_date,
+    c.gateway_id,
+    MIN(rm.timestamp) AS first_upload_time
+  FROM raw_measurements rm
+  JOIN configs c ON rm.variable_id IN (
+    SELECT variable_id 
+    FROM raw_measurements 
+    WHERE sensor_id IN (
+      SELECT sensor_id 
+      FROM raw_measurements
+    )
+  )
+  WHERE c.gateway_id IS NOT NULL
+  GROUP BY DATE(rm.timestamp), c.gateway_id
+),
+first_gateway_per_day AS (
+  SELECT 
+    upload_date,
+    gateway_id,
+    first_upload_time,
+    ROW_NUMBER() OVER (PARTITION BY upload_date ORDER BY first_upload_time) AS rn
+  FROM daily_first_uploads
+)
+SELECT 
+  fg.upload_date,
+  fg.gateway_id,
+  g.name,
+  fg.first_upload_time
+FROM first_gateway_per_day fg
+JOIN gateways g ON fg.gateway_id = g.gateway_id
+WHERE fg.rn = 1
+ORDER BY fg.upload_date DESC;",False,"Column count mismatch & Key column missing! Expected: ['date', 'sensor_id'], Missing: ['date', 'sensor_id']"
+54,Time-Series,Calculate average frequency (time gap) of data uploads per sensor.,"SELECT sensor_id, AVG(diff) FROM (SELECT sensor_id, timestamp - LAG(timestamp) OVER (PARTITION BY sensor_id ORDER BY timestamp) as diff FROM raw_measurements) t GROUP BY sensor_id;","SELECT 
+    sensor_id,
+    AVG(time_gap) AS avg_frequency
+FROM (
+    SELECT 
+        sensor_id,
+        EXTRACT(EPOCH FROM (timestamp - LAG(timestamp) OVER (PARTITION BY sensor_id ORDER BY timestamp))) AS time_gap
+    FROM raw_measurements
+) subquery
+WHERE time_gap IS NOT NULL
+GROUP BY sensor_id
+ORDER BY sensor_id;",False,"Value matrix mismatch. Target rows: 1, Matched: 0"
+55,Time-Series,Day with highest volatility (max - min) per month.,"SELECT DATE_TRUNC('month', timestamp), DATE(timestamp), MAX(value) - MIN(value) as volatility FROM raw_measurements GROUP BY 1, 2 ORDER BY volatility DESC;","WITH daily_volatility AS (
+  SELECT 
+    DATE_TRUNC('month', timestamp) AS month,
+    DATE(timestamp) AS day,
+    MAX(value) - MIN(value) AS volatility
+  FROM raw_measurements
+  GROUP BY DATE_TRUNC('month', timestamp), DATE(timestamp)
+),
+ranked_days AS (
+  SELECT 
+    month,
+    day,
+    volatility,
+    ROW_NUMBER() OVER (PARTITION BY month ORDER BY volatility DESC) AS rn
+  FROM daily_volatility
+)
+SELECT 
+  month,
+  day,
+  volatility
+FROM ranked_days
+WHERE rn = 1
+ORDER BY month;",True,
+56,Time-Series,Count measurements taken during non-working hours (18:00 to 08:00).,SELECT COUNT(*) FROM raw_measurements WHERE EXTRACT(HOUR FROM timestamp) >= 18 OR EXTRACT(HOUR FROM timestamp) < 8;,"SELECT COUNT(*) 
+FROM raw_measurements 
+WHERE EXTRACT(HOUR FROM timestamp) >= 18 OR EXTRACT(HOUR FROM timestamp) < 8",True,
+57,Time-Series,Calculate total uptime days for each site since start_date.,"SELECT site_id, CURRENT_DATE - start_date AS days_active FROM sites;","SELECT 
+    site_id,
+    name,
+    start_date,
+    CURRENT_DATE - start_date AS uptime_days
+FROM sites
+WHERE deleted = false
+ORDER BY site_id;",False,"Column count mismatch & Key column missing! Expected: ['site_id', 'days_active'], Missing: ['days_active']"
+58,Time-Series,Identify 'gaps' longer than 1 hour in data streams.,"SELECT sensor_id, prev_ts, timestamp FROM (SELECT sensor_id, timestamp, LAG(timestamp) OVER (PARTITION BY sensor_id ORDER BY timestamp) as prev_ts FROM raw_measurements) t WHERE timestamp - prev_ts > INTERVAL '1 hour';","SELECT 
+    sensor_id,
+    variable_id,
+    timestamp AS gap_start,
+    LEAD(timestamp) OVER (PARTITION BY sensor_id, variable_id ORDER BY timestamp) AS gap_end,
+    LEAD(timestamp) OVER (PARTITION BY sensor_id, variable_id ORDER BY timestamp) - timestamp AS gap_duration
+FROM raw_measurements
+WHERE LEAD(timestamp) OVER (PARTITION BY sensor_id, variable_id ORDER BY timestamp) - timestamp > INTERVAL '1 hour'
+ORDER BY sensor_id, variable_id, timestamp;",False,"Agent generated SQL failed to execute: 错误:  窗口函数不允许出现在WHERE中
+LINE 8: WHERE LEAD(timestamp) OVER (PARTITION BY sensor_id, variable...
+              ^
+"
+59,Time-Series,Quarterly summary of project operating rates.,"SELECT DATE_TRUNC('quarter', start_date), AVG(operating_rate) FROM sites GROUP BY 1;","SELECT 
+    p.name,
+    DATE_TRUNC('quarter', s.start_date) AS quarter,
+    AVG(s.operating_rate) AS avg_operating_rate
+FROM 
+    projects p
+JOIN 
+    sites s ON p.project_id = s.project_id
+WHERE 
+    s.deleted = FALSE
+GROUP BY 
+    p.name, DATE_TRUNC('quarter', s.start_date)
+ORDER BY 
+    p.name, quarter;",False,"Column count mismatch & Key column missing! Expected: ['date_trunc', 'avg'], Missing: ['date_trunc', 'avg']"
+60,Time-Series,Show first and last upload timestamp for each gateway.,"SELECT sensor_id, MIN(timestamp), MAX(timestamp) FROM raw_measurements GROUP BY sensor_id;","SELECT 
+    g.gateway_id,
+    g.name,
+    MIN(rm.timestamp) AS first_upload,
+    MAX(rm.timestamp) AS last_upload
+FROM gateways g
+JOIN configs c ON g.gateway_id = c.gateway_id
+JOIN raw_measurements rm ON c.config_id = rm.variable_id
+GROUP BY g.gateway_id, g.name
+ORDER BY g.gateway_id;",False,Agent returned an empty dataset while Expected has data.
+61,Complex Logic,Extract specific key from JSONB regex_variables in configs.,SELECT regex_variables->>'specific_key' FROM configs;,"SELECT config_id, gateway_id, file_name, regex_variables, active, created_at
+FROM configs
+WHERE regex_variables IS NOT NULL;",False,"Column count mismatch & Key column missing! Expected: ['?column?'], Missing: ['?column?']"
+62,Complex Logic,Find gateways where configuration JSON contains the word 'filter'.,SELECT * FROM configs WHERE regex_variables::text LIKE '%filter%';,"SELECT g.*
+FROM gateways g
+JOIN configs c ON g.gateway_id = c.gateway_id
+WHERE c.regex_variables::text ILIKE '%filter%'",True,
+63,Complex Logic,Calculate Euclidean distance between two gateways (ID 1 and 2).,"SELECT SQRT(POWER(g1.x - g2.x, 2) + POWER(g1.y - g2.y, 2)) FROM gateways g1, gateways g2 WHERE g1.gateway_id = 1 AND g2.gateway_id = 2;","SELECT sqrt(power(g1.x - g2.x, 2) + power(g1.y - g2.y, 2) + power(g1.z - g2.z, 2))
+FROM gateways g1, gateways g2
+WHERE g1.gateway_id = 1 AND g2.gateway_id = 2;",True,
+64,Complex Logic,"Find gateways within a bounding box (x: 0-10, y: 0-10).",SELECT * FROM gateways WHERE x BETWEEN 0 AND 10 AND y BETWEEN 0 AND 10;,"SELECT gateway_id, name, serial_number, transfer_protocol, power_supply, installation_date, x, y, z, time_zone, created_at
+FROM gateways
+WHERE x BETWEEN 0 AND 10
+  AND y BETWEEN 0 AND 10
+  AND x IS NOT NULL
+  AND y IS NOT NULL;",True,
+65,Complex Logic,List all deleted sites and their gateway IDs.,"SELECT s.site_id, sg.gateway_id FROM sites s JOIN site_gateways sg ON s.site_id = sg.site_id WHERE s.deleted = TRUE;","SELECT s.site_id, s.name, sg.gateway_id
+FROM sites s
+LEFT JOIN site_gateways sg ON s.site_id = sg.site_id
+WHERE s.deleted = TRUE;",True,
+66,Complex Logic,Logic for setting operating_rate to 0 for sites past previsional_end.,UPDATE sites SET operating_rate = 0 WHERE previsional_end < CURRENT_DATE;,"UPDATE sites
+SET operating_rate = 0
+WHERE previsional_end < CURRENT_DATE
+  AND deleted = FALSE
+  AND operating_rate != 0;",False,Ground-truth SQL failed to execute: 'NoneType' object is not iterable
+67,Complex Logic,Find sites with sensor counts above the system average.,SELECT site_id FROM site_gateways GROUP BY site_id HAVING COUNT(gateway_id) > (SELECT COUNT(gateway_id)::float / COUNT(DISTINCT site_id) FROM site_gateways);,"WITH sensor_counts AS (
+    SELECT 
+        s.site_id,
+        s.name,
+        COUNT(DISTINCT rm.sensor_id) AS sensor_count
+    FROM sites s
+    JOIN site_gateways sg ON s.site_id = sg.site_id
+    JOIN configs c ON sg.gateway_id = c.gateway_id
+    JOIN raw_measurements rm ON rm.sensor_id IN (
+        SELECT DISTINCT sensor_id 
+        FROM raw_measurements 
+        WHERE sensor_id IN (
+            SELECT sensor_id 
+            FROM raw_measurements
+        )
+    )
+    GROUP BY s.site_id, s.name
+),
+avg_sensor_count AS (
+    SELECT AVG(sensor_count) AS avg_count
+    FROM sensor_counts
+)
+SELECT 
+    sc.site_id,
+    sc.name,
+    sc.sensor_count
+FROM sensor_counts sc
+CROSS JOIN avg_sensor_count asc
+WHERE sc.sensor_count > asc.avg_count
+ORDER BY sc.sensor_count DESC;",False,"Agent generated SQL failed to execute: 错误:  语法错误 在 ""asc"" 或附近的
+LINE 28: CROSS JOIN avg_sensor_count asc
+                                     ^
+"
+68,Complex Logic,Use CTE to generate a health report (site name + latest value).,"WITH LatestVals AS (SELECT DISTINCT ON (sensor_id) sensor_id, value FROM raw_measurements ORDER BY sensor_id, timestamp DESC) SELECT s.name, lv.value FROM sites s JOIN site_gateways sg ON s.site_id = sg.site_id JOIN LatestVals lv ON sg.gateway_id = lv.sensor_id;","WITH latest_measurements AS (
+  SELECT DISTINCT ON (rm.sensor_id)
+    rm.sensor_id,
+    rm.value,
+    rm.timestamp
+  FROM raw_measurements rm
+  ORDER BY rm.sensor_id, rm.timestamp DESC
+),
+sensor_sites AS (
+  SELECT DISTINCT
+    s.site_id,
+    s.name,
+    lm.value
+  FROM sites s
+  JOIN site_gateways sg ON s.site_id = sg.site_id
+  JOIN configs c ON sg.gateway_id = c.gateway_id
+  JOIN raw_measurements rm ON c.config_id IS NOT NULL
+  JOIN latest_measurements lm ON rm.sensor_id = lm.sensor_id
+)
+SELECT 
+  ss.name,
+  ss.value
+FROM sensor_sites ss;",True,
+69,Complex Logic,Find gateway configs with file extensions ending in '.xml'.,SELECT * FROM configs WHERE file_name LIKE '%.xml';,"SELECT config_id, gateway_id, file_name, ftp_ip, regex_variables, active, created_at
+FROM configs
+WHERE file_name LIKE '%.xml'",True,
+70,Complex Logic,Retrieve project details for the site with the highest ID.,SELECT p.* FROM projects p JOIN sites s ON p.project_id = s.project_id WHERE s.site_id = (SELECT MAX(site_id) FROM sites);,"SELECT p.*
+FROM projects p
+JOIN sites s ON p.project_id = s.project_id
+WHERE s.site_id = (SELECT MAX(site_id) FROM sites);",True,
+71,Complex Logic,Find configs where ftp_ip is in the 192.168.1.x subnet.,SELECT * FROM configs WHERE ftp_ip LIKE '192.168.1.%';,"SELECT *
+FROM configs
+WHERE ftp_ip LIKE '192.168.1.%';",True,
+72,Complex Logic,Identify gateways that have a config but no measurements.,SELECT c.gateway_id FROM configs c LEFT JOIN raw_measurements rm ON c.gateway_id = rm.sensor_id WHERE rm.measurement_id IS NULL;,"SELECT DISTINCT g.gateway_id, g.name, g.serial_number
+FROM gateways g
+JOIN configs c ON g.gateway_id = c.gateway_id
+WHERE c.active = TRUE
+AND NOT EXISTS (
+    SELECT 1
+    FROM raw_measurements rm
+    JOIN configs c2 ON rm.variable_id IN (
+        SELECT v.variable_id
+        FROM configs cfg
+        JOIN gateways gw ON cfg.gateway_id = gw.gateway_id
+        LEFT JOIN site_gateways sg ON gw.gateway_id = sg.gateway_id
+        LEFT JOIN sites s ON sg.site_id = s.site_id
+        LEFT JOIN sensors sen ON sen.site_id = s.site_id
+        LEFT JOIN variables v ON v.sensor_id = sen.sensor_id
+        WHERE cfg.gateway_id = g.gateway_id
+    )
+    WHERE c2.gateway_id = g.gateway_id
+)",False,"Agent generated SQL failed to execute: 错误:  关系 ""sensors"" 不存在
+LINE 14:         LEFT JOIN sensors sen ON sen.site_id = s.site_id
+                           ^
+"
+73,Complex Logic,Rank sites within each project based on site_id.,"SELECT name, project_id, RANK() OVER (PARTITION BY project_id ORDER BY site_id) FROM sites;","SELECT 
+    p.project_id,
+    p.name,
+    s.site_id,
+    s.name,
+    RANK() OVER (PARTITION BY p.project_id ORDER BY s.site_id) AS rank
+FROM projects p
+JOIN sites s ON p.project_id = s.project_id
+WHERE s.deleted = FALSE
+ORDER BY p.project_id, s.site_id;",False,Data alignment mismatch after column filtering.
+74,Complex Logic,Calculate rank of gateways based on altitude (z).,"SELECT name, z, RANK() OVER (ORDER BY z DESC) FROM gateways;","SELECT 
+    gateway_id,
+    name,
+    z,
+    RANK() OVER (ORDER BY z DESC NULLS LAST) AS rank
+FROM gateways
+WHERE z IS NOT NULL
+UNION ALL
+SELECT 
+    gateway_id,
+    name,
+    z,
+    NULL AS rank
+FROM gateways
+WHERE z IS NULL
+ORDER BY rank NULLS LAST, gateway_id;",False,Data alignment mismatch after column filtering.
+75,Complex Logic,Find projects mentioning 'Solar' in the description.,SELECT * FROM projects WHERE description ILIKE '%Solar%';,"SELECT project_id, name, country, client_company_name, time_zone, city, start_date, description
+FROM projects
+WHERE description ILIKE '%Solar%'",True,
+76,Complex Logic,Find active (not deleted) gateway IDs in 'China'.,SELECT sg.gateway_id FROM site_gateways sg JOIN sites s ON sg.site_id = s.site_id JOIN projects p ON s.project_id = p.project_id WHERE p.country = 'China' AND s.deleted = FALSE;,"SELECT DISTINCT g.gateway_id
+FROM gateways g
+JOIN site_gateways sg ON g.gateway_id = sg.gateway_id
+JOIN sites s ON sg.site_id = s.site_id
+JOIN projects p ON s.project_id = p.project_id
+WHERE p.country = 'China' AND s.deleted = false",True,
+77,Complex Logic,Create a view for site status summary.,"CREATE VIEW site_status AS SELECT site_id, name, operating_rate, deleted FROM sites;","CREATE VIEW site_status_summary AS
+SELECT 
+    s.site_id,
+    s.name,
+    s.type,
+    s.start_date,
+    s.previsional_end,
+    s.deleted,
+    s.operating_rate,
+    s.project_id,
+    p.name AS project_name,
+    p.country,
+    p.city,
+    COUNT(DISTINCT sg.gateway_id) AS gateway_count,
+    s.created_at,
+    s.updated_at
+FROM sites s
+LEFT JOIN projects p ON s.project_id = p.project_id
+LEFT JOIN site_gateways sg ON s.site_id = sg.site_id
+GROUP BY 
+    s.site_id,
+    s.name,
+    s.type,
+    s.start_date,
+    s.previsional_end,
+    s.deleted,
+    s.operating_rate,
+    s.project_id,
+    p.name,
+    p.country,
+    p.city,
+    s.created_at,
+    s.updated_at;",False,Ground-truth SQL failed to execute: 'NoneType' object is not iterable
+78,Complex Logic,Use COALESCE to handle null descriptions in projects.,"SELECT name, COALESCE(description, 'No description provided') FROM projects;","SELECT 
+    project_id,
+    name,
+    country,
+    client_company_name,
+    time_zone,
+    city,
+    start_date,
+    COALESCE(description, 'No description available') AS description
+FROM projects;",False,"Column count mismatch & Key column missing! Expected: ['name', 'coalesce'], Missing: ['coalesce']"
+79,Complex Logic,Serial numbers of gateways active in the last 5 minutes.,SELECT g.serial_number FROM gateways g JOIN raw_measurements rm ON g.gateway_id = rm.sensor_id WHERE rm.timestamp > NOW() - INTERVAL '5 minutes';,"SELECT DISTINCT g.serial_number
+FROM gateways g
+JOIN configs c ON g.gateway_id = c.gateway_id
+JOIN raw_measurements rm ON c.config_id = rm.variable_id OR EXISTS (
+    SELECT 1 
+    FROM raw_measurements rm2 
+    WHERE rm2.timestamp >= NOW() - INTERVAL '5 minutes'
+    AND rm2.sensor_id IN (
+        SELECT sensor_id 
+        FROM raw_measurements 
+        WHERE variable_id IN (
+            SELECT config_id 
+            FROM configs 
+            WHERE gateway_id = g.gateway_id
+        )
+    )
+)
+WHERE rm.timestamp >= NOW() - INTERVAL '5 minutes'
+AND c.active = TRUE;",True,
+80,Complex Logic,Total measurement count per project since inception.,"SELECT p.name, COUNT(rm.measurement_id) FROM projects p JOIN sites s ON p.project_id = s.project_id JOIN site_gateways sg ON s.site_id = sg.site_id JOIN raw_measurements rm ON sg.gateway_id = rm.sensor_id GROUP BY p.name;","SELECT 
+    p.project_id,
+    p.name,
+    COUNT(rm.measurement_id)
+FROM projects p
+LEFT JOIN sites s ON p.project_id = s.project_id
+LEFT JOIN site_gateways sg ON s.site_id = sg.site_id
+LEFT JOIN gateways g ON sg.gateway_id = g.gateway_id
+LEFT JOIN configs c ON g.gateway_id = c.gateway_id
+LEFT JOIN raw_measurements rm ON c.config_id IN (
+    SELECT config_id FROM configs WHERE gateway_id = g.gateway_id
+)
+GROUP BY p.project_id, p.name
+ORDER BY p.project_id;",True,
