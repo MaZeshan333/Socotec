@@ -1,0 +1,482 @@
+[
+  {
+    "id": 1,
+    "category": "Project Meta Queries",
+    "question": "List all project names.",
+    "sql": "SELECT name FROM projects;"
+  },
+  {
+    "id": 2,
+    "category": "Project Meta Queries",
+    "question": "How many projects are stored in the database?",
+    "sql": "SELECT COUNT(*) FROM projects;"
+  },
+  {
+    "id": 3,
+    "category": "Project Meta Queries",
+    "question": "Find all projects located in 'France'.",
+    "sql": "SELECT * FROM projects WHERE country = 'France';"
+  },
+  {
+    "id": 4,
+    "category": "Project Meta Queries",
+    "question": "Get the description of the project with ID 511.",
+    "sql": "SELECT description FROM projects WHERE id = 511;"
+  },
+  {
+    "id": 5,
+    "category": "Project Meta Queries",
+    "question": "List projects that are located in the city of 'Toulouse'.",
+    "sql": "SELECT name FROM projects WHERE city = 'Toulouse';"
+  },
+  {
+    "id": 6,
+    "category": "Project Meta Queries",
+    "question": "Find projects where the client company name is 'LIGAM'.",
+    "sql": "SELECT * FROM projects WHERE client_company_name = 'LIGAM';"
+  },
+  {
+    "id": 7,
+    "category": "Project Meta Queries",
+    "question": "List all unique countries where projects are running.",
+    "sql": "SELECT DISTINCT country FROM projects;"
+  },
+  {
+    "id": 8,
+    "category": "Project Meta Queries",
+    "question": "Find the start date of the project named 'M3-GC03 TISSEO'.",
+    "sql": "SELECT start_date FROM projects WHERE name = 'M3-GC03 TISSEO';"
+  },
+  {
+    "id": 9,
+    "category": "Project Meta Queries",
+    "question": "List projects that operate under the 'Europe/Paris' time zone.",
+    "sql": "SELECT * FROM projects WHERE time_zone = 'Europe/Paris';"
+  },
+  {
+    "id": 10,
+    "category": "Project Meta Queries",
+    "question": "Find all projects whose names contain the word 'M3'.",
+    "sql": "SELECT * FROM projects WHERE name LIKE '%M3%';"
+  },
+  {
+    "id": 11,
+    "category": "Project Meta Queries",
+    "question": "Count the number of projects per country.",
+    "sql": "SELECT country, COUNT(*) FROM projects GROUP BY country;"
+  },
+  {
+    "id": 12,
+    "category": "Project Meta Queries",
+    "question": "List the IDs and names of all projects ordered by name.",
+    "sql": "SELECT id, name FROM projects ORDER BY name;"
+  },
+  {
+    "id": 13,
+    "category": "Project Meta Queries",
+    "question": "Find projects whose description is not null.",
+    "sql": "SELECT * FROM projects WHERE description IS NOT NULL;"
+  },
+  {
+    "id": 14,
+    "category": "Project Meta Queries",
+    "question": "Get all project details where the city is 'Paris'.",
+    "sql": "SELECT * FROM projects WHERE city = 'Paris';"
+  },
+  {
+    "id": 15,
+    "category": "Project Meta Queries",
+    "question": "Find the project with the earliest start date.",
+    "sql": "SELECT * FROM projects ORDER BY start_date ASC LIMIT 1;"
+  },
+  {
+    "id": 16,
+    "category": "Site Meta Queries",
+    "question": "List all site names from the database.",
+    "sql": "SELECT name_2 FROM sites;"
+  },
+  {
+    "id": 17,
+    "category": "Site Meta Queries",
+    "question": "How many sites are currently registered?",
+    "sql": "SELECT COUNT(*) FROM sites;"
+  },
+  {
+    "id": 18,
+    "category": "Site Meta Queries",
+    "question": "Find all sites that belong to project ID 511.",
+    "sql": "SELECT * FROM sites WHERE project_id = 511;"
+  },
+  {
+    "id": 19,
+    "category": "Site Meta Queries",
+    "question": "List all sites that are classified as type 'OTHERS'.",
+    "sql": "SELECT * FROM sites WHERE type = 'OTHERS';"
+  },
+  {
+    "id": 20,
+    "category": "Site Meta Queries",
+    "question": "Retrieve all sites with an operating rate higher than 0.8.",
+    "sql": "SELECT * FROM sites WHERE operating_rate > 0.8;"
+  },
+  {
+    "id": 21,
+    "category": "Site Meta Queries",
+    "question": "Find sites where the main_site value is 1055.0.",
+    "sql": "SELECT * FROM sites WHERE main_site = 1055.0;"
+  },
+  {
+    "id": 22,
+    "category": "Site Meta Queries",
+    "question": "Count how many sites are marked as deleted.",
+    "sql": "SELECT COUNT(*) FROM sites WHERE deleted = 'VRAI' OR deleted = 'True';"
+  },
+  {
+    "id": 23,
+    "category": "Site Meta Queries",
+    "question": "Get the previsional end date of the site named 'MAT_Avoisinants'.",
+    "sql": "SELECT previsional_end FROM sites WHERE name_2 = 'MAT_Avoisinants';"
+  },
+  {
+    "id": 24,
+    "category": "Site Meta Queries",
+    "question": "List all sites ordered by their operating rate in descending order.",
+    "sql": "SELECT * FROM sites ORDER BY operating_rate DESC;"
+  },
+  {
+    "id": 25,
+    "category": "Site Meta Queries",
+    "question": "Find sites that have a null extent value.",
+    "sql": "SELECT * FROM sites WHERE extent IS NULL;"
+  },
+  {
+    "id": 26,
+    "category": "Site Meta Queries",
+    "question": "Count the number of sites grouped by their type.",
+    "sql": "SELECT type, COUNT(*) FROM sites GROUP BY type;"
+  },
+  {
+    "id": 27,
+    "category": "Site Meta Queries",
+    "question": "Find the original start date (start_date_3) of site ID 1085.",
+    "sql": "SELECT start_date_3 FROM sites WHERE id_1 = 1085;"
+  },
+  {
+    "id": 28,
+    "category": "Site Meta Queries",
+    "question": "Retrieve all sites created after '2023-05-01'.",
+    "sql": "SELECT * FROM sites WHERE created_at > '2023-05-01';"
+  },
+  {
+    "id": 29,
+    "category": "Site Meta Queries",
+    "question": "Find the maximum operating rate among all sites.",
+    "sql": "SELECT MAX(operating_rate) FROM sites;"
+  },
+  {
+    "id": 30,
+    "category": "Site Meta Queries",
+    "question": "List all unique site types available.",
+    "sql": "SELECT DISTINCT type FROM sites;"
+  },
+  {
+    "id": 31,
+    "category": "Gateway Analytics",
+    "question": "List all gateway names.",
+    "sql": "SELECT gateway_name FROM gateways;"
+  },
+  {
+    "id": 32,
+    "category": "Gateway Analytics",
+    "question": "Find the gateway with the name 'MAT_STA2'.",
+    "sql": "SELECT * FROM gateways WHERE gateway_name = 'MAT_STA2';"
+  },
+  {
+    "id": 33,
+    "category": "Gateway Analytics",
+    "question": "How many gateways use the 'FTP' transfer protocol?",
+    "sql": "SELECT COUNT(*) FROM gateways WHERE transfer_protocol = 'FTP';"
+  },
+  {
+    "id": 34,
+    "category": "Gateway Analytics",
+    "question": "Find gateways that operate on 'Main Supply' power supply.",
+    "sql": "SELECT * FROM gateways WHERE power_supply = 'Main Supply';"
+  },
+  {
+    "id": 35,
+    "category": "Gateway Analytics",
+    "question": "Get the x, y, and z coordinates of all gateways.",
+    "sql": "SELECT x, y, z FROM gateways;"
+  },
+  {
+    "id": 36,
+    "category": "Gateway Analytics",
+    "question": "List gateways that belong to site ID 1085.",
+    "sql": "SELECT * FROM gateways WHERE site_id = 1085;"
+  },
+  {
+    "id": 37,
+    "category": "Gateway Analytics",
+    "question": "Count the number of gateways associated with provider 1.",
+    "sql": "SELECT COUNT(*) FROM gateways WHERE provider = 1;"
+  },
+  {
+    "id": 38,
+    "category": "Gateway Analytics",
+    "question": "Retrieve all gateways located in the 'Europe/Paris' time zone.",
+    "sql": "SELECT * FROM gateways WHERE time_zone = 'Europe/Paris';"
+  },
+  {
+    "id": 39,
+    "category": "Gateway Analytics",
+    "question": "Find the installation date for all gateways.",
+    "sql": "SELECT gateway_name, installation_date FROM gateways;"
+  },
+  {
+    "id": 40,
+    "category": "Gateway Analytics",
+    "question": "Find all gateways where the operating team is team number 2.",
+    "sql": "SELECT * FROM gateways WHERE operating_team = '2';"
+  },
+  {
+    "id": 41,
+    "category": "Gateway Analytics",
+    "question": "Get the total number of gateways in the system.",
+    "sql": "SELECT COUNT(*) FROM gateways;"
+  },
+  {
+    "id": 42,
+    "category": "Gateway Analytics",
+    "question": "Find gateways whose geometric column (geom) is not null.",
+    "sql": "SELECT * FROM gateways WHERE geom IS NOT NULL;"
+  },
+  {
+    "id": 43,
+    "category": "Gateway Analytics",
+    "question": "List all distinct power supply options used by gateways.",
+    "sql": "SELECT DISTINCT power_supply FROM gateways;"
+  },
+  {
+    "id": 44,
+    "category": "Gateway Analytics",
+    "question": "Find gateways updated after '2023-01-01'.",
+    "sql": "SELECT * FROM gateways WHERE updated_at > '2023-01-01';"
+  },
+  {
+    "id": 45,
+    "category": "Gateway Analytics",
+    "question": "List gateway IDs and their corresponding site IDs.",
+    "sql": "SELECT id, site_id FROM gateways;"
+  },
+  {
+    "id": 46,
+    "category": "Configuration Monitoring",
+    "question": "List all unique configuration file names.",
+    "sql": "SELECT file_name FROM configs;"
+  },
+  {
+    "id": 47,
+    "category": "Configuration Monitoring",
+    "question": "Find the configuration entry for gateway ID 2364.",
+    "sql": "SELECT * FROM configs WHERE gateway_id = 2364;"
+  },
+  {
+    "id": 48,
+    "category": "Configuration Monitoring",
+    "question": "How many configurations are marked as active?",
+    "sql": "SELECT COUNT(*) FROM configs WHERE active = true;"
+  },
+  {
+    "id": 49,
+    "category": "Configuration Monitoring",
+    "question": "Get the FTP IP address for the config with ID 5419.",
+    "sql": "SELECT ftp_ip FROM configs WHERE id_1 = 5419;"
+  },
+  {
+    "id": 50,
+    "category": "Configuration Monitoring",
+    "question": "Find all configurations where the ftp_user is 'CEM001FTP'.",
+    "sql": "SELECT * FROM configs WHERE ftp_user = 'CEM001FTP';"
+  },
+  {
+    "id": 51,
+    "category": "Configuration Monitoring",
+    "question": "List configuration file paths (ftp_directory) for all entries.",
+    "sql": "SELECT ftp_directory FROM configs;"
+  },
+  {
+    "id": 52,
+    "category": "Configuration Monitoring",
+    "question": "Find any configuration that has an error message logged.",
+    "sql": "SELECT * FROM configs WHERE error_message IS NOT NULL;"
+  },
+  {
+    "id": 53,
+    "category": "Configuration Monitoring",
+    "question": "What is the last treatment date of configuration 5419?",
+    "sql": "SELECT last_treatment FROM configs WHERE id_1 = 5419;"
+  },
+  {
+    "id": 54,
+    "category": "Configuration Monitoring",
+    "question": "List configurations that are flagged as 'to_move'.",
+    "sql": "SELECT * FROM configs WHERE to_move = true;"
+  },
+  {
+    "id": 55,
+    "category": "Configuration Monitoring",
+    "question": "Retrieve the regular expression variables (regex_variables) for all configs.",
+    "sql": "SELECT regex_variables FROM configs;"
+  },
+  {
+    "id": 56,
+    "category": "Configuration Monitoring",
+    "question": "Count how many configurations have 'remote' as their ftp setting.",
+    "sql": "SELECT COUNT(*) FROM configs WHERE ftp = 'remote';"
+  },
+  {
+    "id": 57,
+    "category": "Configuration Monitoring",
+    "question": "Get the file ID for all configurations.",
+    "sql": "SELECT file_id FROM configs;"
+  },
+  {
+    "id": 58,
+    "category": "Configuration Monitoring",
+    "question": "Find configurations last modified after '2025-01-01'.",
+    "sql": "SELECT * FROM configs WHERE last_modified > '2025-01-01';"
+  },
+  {
+    "id": 59,
+    "category": "Configuration Monitoring",
+    "question": "List the unique parsing IDs used across configurations.",
+    "sql": "SELECT DISTINCT parsing_id FROM configs;"
+  },
+  {
+    "id": 60,
+    "category": "Configuration Monitoring",
+    "question": "Find configs where keep_folder parameter is enabled.",
+    "sql": "SELECT * FROM configs WHERE keep_folder IS NOT NULL;"
+  },
+  {
+    "id": 61,
+    "category": "Telemetry & Raw Logs",
+    "question": "Find all raw data values for the variable named 'AccelerationZ'.",
+    "sql": "SELECT value FROM variables_metrics_raw_data WHERE variable_name = 'AccelerationZ';"
+  },
+  {
+    "id": 62,
+    "category": "Telemetry & Raw Logs",
+    "question": "Count the total number of telemetry records in the raw data table.",
+    "sql": "SELECT COUNT(*) FROM variables_metrics_raw_data;"
+  },
+  {
+    "id": 63,
+    "category": "Telemetry & Raw Logs",
+    "question": "Get the average value of metrics whose unit is 'm/s2'.",
+    "sql": "SELECT AVG(value) FROM variables_metrics_raw_data WHERE unit = 'm/s2';"
+  },
+  {
+    "id": 64,
+    "category": "Telemetry & Raw Logs",
+    "question": "List all raw data points logged by the gateway 'Gateway-Tisséo Ligne A'.",
+    "sql": "SELECT * FROM variables_metrics_raw_data WHERE gateway_name = 'Gateway-Tisséo Ligne A';"
+  },
+  {
+    "id": 65,
+    "category": "Telemetry & Raw Logs",
+    "question": "Find the maximum recorded value for the metric 'acceleration'.",
+    "sql": "SELECT MAX(value) FROM variables_metrics_raw_data WHERE metric = 'acceleration';"
+  },
+  {
+    "id": 66,
+    "category": "Telemetry & Raw Logs",
+    "question": "List all distinct variable aliases present in the raw logs.",
+    "sql": "SELECT DISTINCT variable_alias FROM variables_metrics_raw_data;"
+  },
+  {
+    "id": 67,
+    "category": "Telemetry & Raw Logs",
+    "question": "Retrieve all logs recorded for sensor ID 15912.",
+    "sql": "SELECT * FROM variables_metrics_raw_data WHERE sensor_id = 15912;"
+  },
+  {
+    "id": 68,
+    "category": "Telemetry & Raw Logs",
+    "question": "Find logs recorded between '2024-11-20' and '2024-11-22'.",
+    "sql": "SELECT * FROM variables_metrics_raw_data WHERE timestamp BETWEEN '2024-11-20' AND '2024-11-22';"
+  },
+  {
+    "id": 69,
+    "category": "Telemetry & Raw Logs",
+    "question": "Count telemetry records grouped by metric type.",
+    "sql": "SELECT metric, COUNT(*) FROM variables_metrics_raw_data GROUP BY metric;"
+  },
+  {
+    "id": 70,
+    "category": "Telemetry & Raw Logs",
+    "question": "Find the minimum value recorded for variable ID 255806.",
+    "sql": "SELECT MIN(value) FROM variables_metrics_raw_data WHERE variable_id = 255806;"
+  },
+  {
+    "id": 71,
+    "category": "Advanced Relational Joins",
+    "question": "Get all sites along with their corresponding project names.",
+    "sql": "SELECT s.name_2, p.name FROM sites s JOIN projects p ON s.project_id = p.id;"
+  },
+  {
+    "id": 72,
+    "category": "Advanced Relational Joins",
+    "question": "Find all gateway names along with the name of the site they belong to.",
+    "sql": "SELECT g.gateway_name, s.name_2 FROM gateways g JOIN sites s ON g.site_id = s.id_1;"
+  },
+  {
+    "id": 73,
+    "category": "Advanced Relational Joins",
+    "question": "List configuration file names alongside their matching gateway names.",
+    "sql": "SELECT c.file_name, g.gateway_name FROM configs c JOIN gateways g ON c.gateway_id = g.id;"
+  },
+  {
+    "id": 74,
+    "category": "Advanced Relational Joins",
+    "question": "Find all projects that have sites of type 'OTHERS'.",
+    "sql": "SELECT DISTINCT p.name FROM projects p JOIN sites s ON s.project_id = p.id WHERE s.type = 'OTHERS';"
+  },
+  {
+    "id": 75,
+    "category": "Advanced Relational Joins",
+    "question": "Retrieve gateway names and their active configs where config status is active.",
+    "sql": "SELECT g.gateway_name, c.file_name FROM gateways g JOIN configs c ON c.gateway_id = g.id WHERE c.active = true;"
+  },
+  {
+    "id": 76,
+    "category": "Advanced Relational Joins",
+    "question": "Count the total number of gateways per project.",
+    "sql": "SELECT p.name, COUNT(g.id) FROM projects p JOIN sites s ON s.project_id = p.id JOIN gateways g ON g.site_id = s.id_1 GROUP BY p.name;"
+  },
+  {
+    "id": 77,
+    "category": "Advanced Relational Joins",
+    "question": "Find the project city and description for the site named 'MAT_Avoisinants'.",
+    "sql": "SELECT p.city, p.description FROM projects p JOIN sites s ON s.project_id = p.id WHERE s.name_2 = 'MAT_Avoisinants';"
+  },
+  {
+    "id": 78,
+    "category": "Advanced Relational Joins",
+    "question": "List all configurations for gateways that are located in the 'Europe/Paris' time zone.",
+    "sql": "SELECT c.* FROM configs c JOIN gateways g ON c.gateway_id = g.id WHERE g.time_zone = 'Europe/Paris';"
+  },
+  {
+    "id": 79,
+    "category": "Advanced Relational Joins",
+    "question": "Get the average operating rate of sites belonging to the client 'LIGAM'.",
+    "sql": "SELECT AVG(s.operating_rate) FROM sites s JOIN projects p ON s.project_id = p.id WHERE p.client_company_name = 'LIGAM';"
+  },
+  {
+    "id": 80,
+    "category": "Advanced Relational Joins",
+    "question": "Find all projects that have a registered gateway using 'FTP' protocol.",
+    "sql": "SELECT DISTINCT p.name FROM projects p JOIN sites s ON s.project_id = p.id JOIN gateways g ON g.site_id = s.id_1 WHERE g.transfer_protocol = 'FTP';"
+  }
+]
