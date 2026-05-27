@@ -9,12 +9,12 @@ from dotenv import load_dotenv
 # 1. Load configuration from .env file
 load_dotenv()
 
-DB_HOST = os.getenv("DB_HOST", "localhost")
-DB_PORT = os.getenv("DB_PORT", "5432")
-DB_USER = os.getenv("DB_USER", "postgres")
-DB_PASS = os.getenv("DB_PASS", "")
-DB_NAME_DEFAULT = os.getenv("DB_NAME_DEFAULT", "postgres")
-DB_NAME_NEW = os.getenv("DB_NAME_NEW", "my_project_db")
+DB_HOST = os.getenv("DB_HOST")
+DB_PORT = os.getenv("DB_PORT")
+DB_USER = os.getenv("DB_USER")
+DB_PASS = os.getenv("DB_PASS")
+DB_NAME_DEFAULT = os.getenv("DB_NAME_DEFAULT")
+DB_NAME_NEW = os.getenv("DB_NAME_NEW")
 
 def get_connection(db_name):
     """Establishes a connection to the specified database."""
