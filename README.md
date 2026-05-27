@@ -88,5 +88,5 @@ DB_PORT=5432
 DB_USER=your_username
 DB_PASS=your_password
 DB_NAME_DEFAULT=postgres
-DB_NAME_NEW=spider_mini_test
+DB_NAME_NEW=my_project_db
 ```
