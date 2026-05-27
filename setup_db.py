@@ -3,11 +3,11 @@ import psycopg2
 from psycopg2 import sql
 from dotenv import load_dotenv
 
-# 加载配置
+# Load configuration
 load_dotenv()
 
 def get_connection(db_name):
-    """通用的数据库连接辅助函数"""
+    """Generic database connection helper function"""
     return psycopg2.connect(
         host=os.getenv("DB_HOST"),
         port=os.getenv("DB_PORT"),
@@ -19,28 +19,28 @@ def get_connection(db_name):
 def setup_database():
     new_db = os.getenv("DB_NAME_NEW")
     
-    # --- 第一步：连接到 'postgres' 默认库来创建新数据库 ---
+    # --- Step 1: Connect to the default 'postgres' database to create the new database ---
     conn = get_connection(os.getenv("DB_NAME_DEFAULT"))
-    conn.autocommit = True  # 创建数据库必须在事务之外运行
+    conn.autocommit = True  # Creating a database must run outside a transaction
     cur = conn.cursor()
 
     try:
-        print(f"正在创建数据库: {new_db}...")
+        print(f"Creating database: {new_db}...")
         cur.execute(sql.SQL("CREATE DATABASE {}").format(sql.Identifier(new_db)))
-        print(f"数据库 '{new_db}' 创建成功！")
+        print(f"Database '{new_db}' created successfully!")
     except psycopg2.errors.DuplicateDatabase:
-        print(f"数据库 '{new_db}' 已存在，跳过创建。")
+        print(f"Database '{new_db}' already exists, skipping creation.")
     except Exception as e:
-        print(f"创建数据库失败: {e}")
+        print(f"Database creation failed: {e}")
     finally:
         cur.close()
         conn.close()
 
-    # --- 第二步：连接到新创建的数据库，初始化表结构 ---
+    # --- Step 2: Connect to the newly created database and initialize table structures ---
     conn = get_connection(new_db)
     cur = conn.cursor()
     
-    # 所有的建表语句（已移除 PostGIS 的 GEOMETRY 类型）
+    # All table creation statements (PostGIS GEOMETRY type removed)
     commands = [
         """
         CREATE TABLE IF NOT EXISTS projects (
@@ -78,9 +78,9 @@ def setup_database():
             transfer_protocol TEXT,
             power_supply TEXT,
             installation_date DATE,
-            x DOUBLE PRECISION, -- 用于存储经度 (Longitude)
-            y DOUBLE PRECISION, -- 用于存储纬度 (Latitude)
-            z DOUBLE PRECISION, -- 用于存储高度 (Altitude)
+            x DOUBLE PRECISION, -- Stores longitude
+            y DOUBLE PRECISION, -- Stores latitude
+            z DOUBLE PRECISION, -- Stores altitude
             time_zone TEXT,
             created_at TIMESTAMPTZ DEFAULT NOW()
         );
@@ -112,19 +112,19 @@ def setup_database():
             timestamp TIMESTAMPTZ NOT NULL
         );
         """,
-        # 添加索引以优化查询性能
+        # Add indexes to optimize query performance
         "CREATE INDEX IF NOT EXISTS idx_measurements_timestamp ON raw_measurements (timestamp DESC);",
         "CREATE INDEX IF NOT EXISTS idx_measurements_variable_id ON raw_measurements (variable_id);"
     ]
 
     try:
-        print(f"正在数据库 '{new_db}' 中初始化表结构...")
+        print(f"Initializing table structures in database '{new_db}'...")
         for cmd in commands:
             cur.execute(cmd)
         conn.commit()
-        print("所有表和索引初始化成功！项目已就绪。")
+        print("All tables and indexes initialized successfully! Project is ready.")
     except Exception as e:
-        print(f"初始化表结构失败: {e}")
+        print(f"Table structure initialization failed: {e}")
         conn.rollback()
     finally:
         cur.close()
