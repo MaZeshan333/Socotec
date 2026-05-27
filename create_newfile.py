@@ -8,10 +8,10 @@ if not os.path.exists(NEW_DIR):
     os.makedirs(NEW_DIR)
 
 def clean_data():
-    print("开始从 Origin 提取并清洗数据...")
+    print("Starting data extraction and cleaning from Origin...")
     ENCODING = 'ISO-8859-1' 
 
-    # 加载原始文件
+    # Load original files
     df_ps = pd.read_csv(os.path.join(ORIGIN_DIR, 'projects_sites.csv'), sep=';', encoding=ENCODING)
     df_gcs = pd.read_csv(os.path.join(ORIGIN_DIR, 'gateways_configs_sensors.csv'), encoding=ENCODING)
     
@@ -37,7 +37,7 @@ def clean_data():
     sites = to_int(sites, ['site_id', 'project_id', 'main_site'])
     sites.to_csv(os.path.join(NEW_DIR, 'sites.csv'), index=False, encoding='utf-8')
 
-    # 3. Gateways (根据 gateways_configs_sensors.csv 结构)
+    # 3. Gateways (based on gateways_configs_sensors.csv structure)
     gateways = df_gcs.iloc[:, 0:15].drop_duplicates()
     gateways = gateways[gateways.iloc[:, 0].notna()]
     gateways_final = pd.DataFrame({
@@ -70,14 +70,14 @@ def clean_data():
     configs_final = to_int(configs_final, ['config_id', 'gateway_id'])
     configs_final.to_csv(os.path.join(NEW_DIR, 'configs.csv'), index=False, encoding='utf-8')
 
-    # 6. Raw Measurements (修正重点)
-    # 剔除 value 为空的行，否则数据库导入会报错
+    # 6. Raw Measurements (key fix)
+    # Remove rows with empty value, otherwise database import will error
     raw_m = df_raw[['variable_id', 'sensor_id', 'value', 'timestamp']].drop_duplicates()
     raw_m = raw_m.dropna(subset=['value']) 
     raw_m = to_int(raw_m, ['variable_id', 'sensor_id'])
     raw_m.to_csv(os.path.join(NEW_DIR, 'raw_measurements.csv'), index=False, encoding='utf-8')
 
-    print(f"清洗完成！所有文件已存入 {NEW_DIR}。")
+    print(f"Cleaning complete! All files saved to {NEW_DIR}.")
 
 if __name__ == "__main__":
     clean_data()
