@@ -1,0 +1,167 @@
+ID,Category,Question,Expected SQL,Agent SQL,Is Match,Error Note
+1,Project Meta Queries,List all project names.,SELECT name FROM projects;,SELECT name FROM projects;,True,
+2,Project Meta Queries,How many projects are stored in the database?,SELECT COUNT(*) FROM projects;,SELECT COUNT(*) FROM projects;,True,
+3,Project Meta Queries,Find all projects located in 'France'.,SELECT * FROM projects WHERE country = 'France';,"SELECT id, name, country, client_company_name, time_zone, city, start_date, description
+FROM projects
+WHERE country = 'France';",True,
+4,Project Meta Queries,Get the description of the project with ID 511.,SELECT description FROM projects WHERE id = 511;,SELECT description FROM projects WHERE id = 511;,True,
+5,Project Meta Queries,List projects that are located in the city of 'Toulouse'.,SELECT name FROM projects WHERE city = 'Toulouse';,"SELECT id, name, country, client_company_name, time_zone, city, start_date, description
+FROM projects
+WHERE city = 'Toulouse';",True,
+6,Project Meta Queries,Find projects where the client company name is 'LIGAM'.,SELECT * FROM projects WHERE client_company_name = 'LIGAM';,"SELECT id, name, country, client_company_name, time_zone, city, start_date, description
+FROM projects
+WHERE client_company_name = 'LIGAM';",True,
+7,Project Meta Queries,List all unique countries where projects are running.,SELECT DISTINCT country FROM projects;,SELECT DISTINCT country FROM projects WHERE country IS NOT NULL;,True,
+8,Project Meta Queries,Find the start date of the project named 'M3-GC03 TISSEO'.,SELECT start_date FROM projects WHERE name = 'M3-GC03 TISSEO';,SELECT start_date FROM projects WHERE name = 'M3-GC03 TISSEO';,True,
+9,Project Meta Queries,List projects that operate under the 'Europe/Paris' time zone.,SELECT * FROM projects WHERE time_zone = 'Europe/Paris';,"SELECT id, name, country, client_company_name, time_zone, city, start_date, description
+FROM projects
+WHERE time_zone = 'Europe/Paris';",True,
+10,Project Meta Queries,Find all projects whose names contain the word 'M3'.,SELECT * FROM projects WHERE name LIKE '%M3%';,SELECT * FROM projects WHERE name LIKE '%M3%';,True,
+11,Project Meta Queries,Count the number of projects per country.,"SELECT country, COUNT(*) FROM projects GROUP BY country;","SELECT country, COUNT(*) FROM projects GROUP BY country;",True,
+12,Project Meta Queries,List the IDs and names of all projects ordered by name.,"SELECT id, name FROM projects ORDER BY name;","SELECT id, name
+FROM projects
+ORDER BY name;",True,
+13,Project Meta Queries,Find projects whose description is not null.,SELECT * FROM projects WHERE description IS NOT NULL;,SELECT * FROM projects WHERE description IS NOT NULL;,True,
+14,Project Meta Queries,Get all project details where the city is 'Paris'.,SELECT * FROM projects WHERE city = 'Paris';,"SELECT id, name, country, client_company_name, time_zone, city, start_date, description
+FROM projects
+WHERE city = 'Paris';",True,
+15,Project Meta Queries,Find the project with the earliest start date.,SELECT * FROM projects ORDER BY start_date ASC LIMIT 1;,"SELECT id, name, country, client_company_name, time_zone, city, start_date, description
+FROM projects
+ORDER BY TO_DATE(start_date, 'DD/MM/YYYY') ASC
+LIMIT 1;",True,
+16,Site Meta Queries,List all site names from the database.,SELECT name_2 FROM sites;,SELECT name_2 FROM sites;,True,
+17,Site Meta Queries,How many sites are currently registered?,SELECT COUNT(*) FROM sites;,SELECT COUNT(*) FROM sites;,True,
+18,Site Meta Queries,Find all sites that belong to project ID 511.,SELECT * FROM sites WHERE project_id = 511;,SELECT * FROM sites WHERE project_id = 511;,True,
+19,Site Meta Queries,List all sites that are classified as type 'OTHERS'.,SELECT * FROM sites WHERE type = 'OTHERS';,"SELECT id_1, name_2, type, extent, start_date_3, previsional_end, project_id, created_at, updated_at, deleted, operating_rate, main_site
+FROM sites
+WHERE type = 'OTHERS';",True,
+20,Site Meta Queries,Retrieve all sites with an operating rate higher than 0.8.,SELECT * FROM sites WHERE operating_rate > 0.8;,SELECT * FROM sites WHERE operating_rate > 0.8;,True,
+21,Site Meta Queries,Find sites where the main_site value is 1055.0.,SELECT * FROM sites WHERE main_site = 1055.0;,SELECT * FROM sites WHERE main_site = 1055.0;,True,
+22,Site Meta Queries,Count how many sites are marked as deleted.,SELECT COUNT(*) FROM sites WHERE deleted = 'VRAI' OR deleted = 'True';,SELECT COUNT(*) FROM sites WHERE deleted = 'VRAI';,True,
+23,Site Meta Queries,Get the previsional end date of the site named 'MAT_Avoisinants'.,SELECT previsional_end FROM sites WHERE name_2 = 'MAT_Avoisinants';,"SELECT previsional_end
+FROM sites
+WHERE name_2 = 'MAT_Avoisinants';",True,
+24,Site Meta Queries,List all sites ordered by their operating rate in descending order.,SELECT * FROM sites ORDER BY operating_rate DESC;,"SELECT id_1, name_2, operating_rate, project_id, type, extent, start_date_3, previsional_end, main_site
+FROM sites
+ORDER BY operating_rate DESC;",False,"Rejected by LLM Judge: Exception occurred during LLM Judge arbitration: 'MultiModelChat' object has no attribute 'send_message' (Original Rule Fault: Column count mismatch & Key column missing! Expected: ['id_1', 'name_2', 'type', 'extent', 'start_date_3', 'previsional_end', 'project_id', 'created_at', 'updated_at', 'deleted', 'operating_rate', 'main_site'], Missing: ['created_at', 'updated_at', 'deleted'])"
+25,Site Meta Queries,Find sites that have a null extent value.,SELECT * FROM sites WHERE extent IS NULL;,SELECT * FROM sites WHERE extent IS NULL OR extent = 'None';,True,
+26,Site Meta Queries,Count the number of sites grouped by their type.,"SELECT type, COUNT(*) FROM sites GROUP BY type;","SELECT type, COUNT(*) FROM sites GROUP BY type;",True,
+27,Site Meta Queries,Find the original start date (start_date_3) of site ID 1085.,SELECT start_date_3 FROM sites WHERE id_1 = 1085;,"SELECT start_date_3
+FROM sites
+WHERE id_1 = 1085;",True,
+28,Site Meta Queries,Retrieve all sites created after '2023-05-01'.,SELECT * FROM sites WHERE created_at > '2023-05-01';,"SELECT * 
+FROM sites 
+WHERE created_at > '2023-05-01';",True,
+29,Site Meta Queries,Find the maximum operating rate among all sites.,SELECT MAX(operating_rate) FROM sites;,SELECT MAX(operating_rate) FROM sites;,True,
+30,Site Meta Queries,List all unique site types available.,SELECT DISTINCT type FROM sites;,SELECT DISTINCT type FROM sites WHERE type IS NOT NULL ORDER BY type;,True,
+31,Gateway Analytics,List all gateway names.,SELECT gateway_name FROM gateways;,SELECT gateway_name FROM gateways;,True,
+32,Gateway Analytics,Find the gateway with the name 'MAT_STA2'.,SELECT * FROM gateways WHERE gateway_name = 'MAT_STA2';,SELECT * FROM gateways WHERE gateway_name = 'MAT_STA2';,True,
+33,Gateway Analytics,How many gateways use the 'FTP' transfer protocol?,SELECT COUNT(*) FROM gateways WHERE transfer_protocol = 'FTP';,SELECT COUNT(*) FROM gateways WHERE transfer_protocol = 'FTP';,True,
+34,Gateway Analytics,Find gateways that operate on 'Main Supply' power supply.,SELECT * FROM gateways WHERE power_supply = 'Main Supply';,"SELECT id, gateway_name, serial_number, transfer_protocol, power_supply, installation_date, operating_team, x, y, z, time_zone, geom, created_at, updated_at, provider, site_id
+FROM gateways
+WHERE power_supply = 'Main Supply';",True,
+35,Gateway Analytics,"Get the x, y, and z coordinates of all gateways.","SELECT x, y, z FROM gateways;","SELECT x, y, z FROM gateways;",True,
+36,Gateway Analytics,List gateways that belong to site ID 1085.,SELECT * FROM gateways WHERE site_id = 1085;,"SELECT id, gateway_name, serial_number, transfer_protocol, power_supply, installation_date, operating_team, x, y, z, time_zone, geom, created_at, updated_at, provider, site_id
+FROM gateways
+WHERE site_id = 1085;",True,
+37,Gateway Analytics,Count the number of gateways associated with provider 1.,SELECT COUNT(*) FROM gateways WHERE provider = 1;,SELECT COUNT(*) FROM gateways WHERE provider = 1;,True,
+38,Gateway Analytics,Retrieve all gateways located in the 'Europe/Paris' time zone.,SELECT * FROM gateways WHERE time_zone = 'Europe/Paris';,"SELECT id, gateway_name, serial_number, transfer_protocol, power_supply, installation_date, operating_team, x, y, z, time_zone, geom, created_at, updated_at, provider, site_id
+FROM gateways
+WHERE time_zone = 'Europe/Paris';",True,
+39,Gateway Analytics,Find the installation date for all gateways.,"SELECT gateway_name, installation_date FROM gateways;","SELECT gateway_name, installation_date
+FROM gateways;",True,
+40,Gateway Analytics,Find all gateways where the operating team is team number 2.,SELECT * FROM gateways WHERE operating_team = '2';,SELECT * FROM gateways WHERE operating_team = '2';,True,
+41,Gateway Analytics,Get the total number of gateways in the system.,SELECT COUNT(*) FROM gateways;,SELECT COUNT(*) FROM gateways;,True,
+42,Gateway Analytics,Find gateways whose geometric column (geom) is not null.,SELECT * FROM gateways WHERE geom IS NOT NULL;,SELECT * FROM gateways WHERE geom IS NOT NULL;,True,
+43,Gateway Analytics,List all distinct power supply options used by gateways.,SELECT DISTINCT power_supply FROM gateways;,"SELECT DISTINCT power_supply
+FROM gateways
+WHERE power_supply IS NOT NULL;",True,
+44,Gateway Analytics,Find gateways updated after '2023-01-01'.,SELECT * FROM gateways WHERE updated_at > '2023-01-01';,SELECT * FROM gateways WHERE updated_at > '2023-01-01';,True,
+45,Gateway Analytics,List gateway IDs and their corresponding site IDs.,"SELECT id, site_id FROM gateways;","SELECT id, site_id FROM gateways;",True,
+46,Configuration Monitoring,List all unique configuration file names.,SELECT file_name FROM configs;,"SELECT DISTINCT file_name
+FROM configs
+WHERE file_name IS NOT NULL;",True,
+47,Configuration Monitoring,Find the configuration entry for gateway ID 2364.,SELECT * FROM configs WHERE gateway_id = 2364;,SELECT * FROM configs WHERE gateway_id = 2364;,True,
+48,Configuration Monitoring,How many configurations are marked as active?,SELECT COUNT(*) FROM configs WHERE active = true;,SELECT COUNT(*) FROM configs WHERE active = TRUE;,True,
+49,Configuration Monitoring,Get the FTP IP address for the config with ID 5419.,SELECT ftp_ip FROM configs WHERE id_1 = 5419;,SELECT ftp_ip FROM configs WHERE id_1 = 5419;,True,
+50,Configuration Monitoring,Find all configurations where the ftp_user is 'CEM001FTP'.,SELECT * FROM configs WHERE ftp_user = 'CEM001FTP';,SELECT * FROM configs WHERE ftp_user = 'CEM001FTP';,True,
+51,Configuration Monitoring,List configuration file paths (ftp_directory) for all entries.,SELECT ftp_directory FROM configs;,SELECT ftp_directory FROM configs;,True,
+52,Configuration Monitoring,Find any configuration that has an error message logged.,SELECT * FROM configs WHERE error_message IS NOT NULL;,"SELECT id_1, file_name, gateway_id, error_message, last_treatment, ftp_directory, active
+FROM configs
+WHERE error_message IS NOT NULL AND error_message != 'None';",True,
+53,Configuration Monitoring,What is the last treatment date of configuration 5419?,SELECT last_treatment FROM configs WHERE id_1 = 5419;,"SELECT last_treatment
+FROM configs
+WHERE id_1 = 5419;",True,
+54,Configuration Monitoring,List configurations that are flagged as 'to_move'.,SELECT * FROM configs WHERE to_move = true;,SELECT * FROM configs WHERE to_move = TRUE;,True,
+55,Configuration Monitoring,Retrieve the regular expression variables (regex_variables) for all configs.,SELECT regex_variables FROM configs;,SELECT regex_variables FROM configs;,True,
+56,Configuration Monitoring,Count how many configurations have 'remote' as their ftp setting.,SELECT COUNT(*) FROM configs WHERE ftp = 'remote';,SELECT COUNT(*) FROM configs WHERE ftp = 'remote';,True,
+57,Configuration Monitoring,Get the file ID for all configurations.,SELECT file_id FROM configs;,SELECT file_id FROM configs;,True,
+58,Configuration Monitoring,Find configurations last modified after '2025-01-01'.,SELECT * FROM configs WHERE last_modified > '2025-01-01';,SELECT * FROM configs WHERE last_modified > '2025-01-01',True,
+59,Configuration Monitoring,List the unique parsing IDs used across configurations.,SELECT DISTINCT parsing_id FROM configs;,"SELECT DISTINCT parsing_id
+FROM configs
+WHERE parsing_id IS NOT NULL
+ORDER BY parsing_id;",True,
+60,Configuration Monitoring,Find configs where keep_folder parameter is enabled.,SELECT * FROM configs WHERE keep_folder IS NOT NULL;,SELECT * FROM configs WHERE keep_folder = 1.0;,True,
+61,Telemetry & Raw Logs,Find all raw data values for the variable named 'AccelerationZ'.,SELECT value FROM variables_metrics_raw_data WHERE variable_name = 'AccelerationZ';,"SELECT variable_id, value, sensor_id, timestamp, unit, gateway_name, metric, variable_name, variable_alias
+FROM variables_metrics_raw_data
+WHERE variable_name = 'AccelerationZ';",True,
+62,Telemetry & Raw Logs,Count the total number of telemetry records in the raw data table.,SELECT COUNT(*) FROM variables_metrics_raw_data;,SELECT COUNT(*) FROM variables_metrics_raw_data;,True,
+63,Telemetry & Raw Logs,Get the average value of metrics whose unit is 'm/s2'.,SELECT AVG(value) FROM variables_metrics_raw_data WHERE unit = 'm/s2';,"SELECT AVG(value) 
+FROM variables_metrics_raw_data 
+WHERE unit = 'm/s2';",True,
+64,Telemetry & Raw Logs,List all raw data points logged by the gateway 'Gateway-Tisséo Ligne A'.,SELECT * FROM variables_metrics_raw_data WHERE gateway_name = 'Gateway-Tisséo Ligne A';,"SELECT *
+FROM variables_metrics_raw_data
+WHERE gateway_name = 'Gateway-Tisséo Ligne A';",True,
+65,Telemetry & Raw Logs,Find the maximum recorded value for the metric 'acceleration'.,SELECT MAX(value) FROM variables_metrics_raw_data WHERE metric = 'acceleration';,SELECT MAX(value) FROM variables_metrics_raw_data WHERE metric = 'acceleration';,True,
+66,Telemetry & Raw Logs,List all distinct variable aliases present in the raw logs.,SELECT DISTINCT variable_alias FROM variables_metrics_raw_data;,"SELECT DISTINCT variable_alias
+FROM variables_metrics_raw_data
+WHERE variable_alias IS NOT NULL
+ORDER BY variable_alias;",True,
+67,Telemetry & Raw Logs,Retrieve all logs recorded for sensor ID 15912.,SELECT * FROM variables_metrics_raw_data WHERE sensor_id = 15912;,"SELECT *
+FROM variables_metrics_raw_data
+WHERE sensor_id = 15912;",True,
+68,Telemetry & Raw Logs,Find logs recorded between '2024-11-20' and '2024-11-22'.,SELECT * FROM variables_metrics_raw_data WHERE timestamp BETWEEN '2024-11-20' AND '2024-11-22';,"SELECT *
+FROM variables_metrics_raw_data
+WHERE timestamp::date >= '2024-11-20' AND timestamp::date <= '2024-11-22';",True,
+69,Telemetry & Raw Logs,Count telemetry records grouped by metric type.,"SELECT metric, COUNT(*) FROM variables_metrics_raw_data GROUP BY metric;","SELECT metric, COUNT(*) FROM variables_metrics_raw_data GROUP BY metric;",True,
+70,Telemetry & Raw Logs,Find the minimum value recorded for variable ID 255806.,SELECT MIN(value) FROM variables_metrics_raw_data WHERE variable_id = 255806;,SELECT MIN(value) FROM variables_metrics_raw_data WHERE variable_id = 255806;,True,
+71,Advanced Relational Joins,Get all sites along with their corresponding project names.,"SELECT s.name_2, p.name FROM sites s JOIN projects p ON s.project_id = p.id;","SELECT s.name_2, p.name
+FROM sites s
+LEFT JOIN projects p ON s.project_id = p.id;",True,
+72,Advanced Relational Joins,Find all gateway names along with the name of the site they belong to.,"SELECT g.gateway_name, s.name_2 FROM gateways g JOIN sites s ON g.site_id = s.id_1;","SELECT g.gateway_name, s.name_2
+FROM gateways g
+LEFT JOIN sites s ON g.site_id = s.id_1;",True,
+73,Advanced Relational Joins,List configuration file names alongside their matching gateway names.,"SELECT c.file_name, g.gateway_name FROM configs c JOIN gateways g ON c.gateway_id = g.id;","SELECT c.file_name, g.gateway_name
+FROM configs c
+JOIN gateways g ON c.gateway_id = g.id;",True,
+74,Advanced Relational Joins,Find all projects that have sites of type 'OTHERS'.,SELECT DISTINCT p.name FROM projects p JOIN sites s ON s.project_id = p.id WHERE s.type = 'OTHERS';,"SELECT DISTINCT p.id, p.name, p.country, p.client_company_name, p.time_zone, p.city, p.start_date, p.description
+FROM projects p
+INNER JOIN sites s ON p.id = s.project_id
+WHERE s.type = 'OTHERS';",True,
+75,Advanced Relational Joins,Retrieve gateway names and their active configs where config status is active.,"SELECT g.gateway_name, c.file_name FROM gateways g JOIN configs c ON c.gateway_id = g.id WHERE c.active = true;","SELECT g.gateway_name, c.config
+FROM gateways g
+INNER JOIN configs c ON g.id = c.gateway_id
+WHERE c.active = TRUE;",False,"Rejected by LLM Judge: Exception occurred during LLM Judge arbitration: 'MultiModelChat' object has no attribute 'send_message' (Original Rule Fault: Value matrix mismatch. Target rows: 24, Matched: 0)"
+76,Advanced Relational Joins,Count the total number of gateways per project.,"SELECT p.name, COUNT(g.id) FROM projects p JOIN sites s ON s.project_id = p.id JOIN gateways g ON g.site_id = s.id_1 GROUP BY p.name;","SELECT p.id, p.name, COUNT(g.id)
+FROM projects p
+LEFT JOIN sites s ON p.id = s.project_id
+LEFT JOIN gateways g ON s.id_1 = g.site_id
+GROUP BY p.id, p.name
+ORDER BY p.id;",True,
+77,Advanced Relational Joins,Find the project city and description for the site named 'MAT_Avoisinants'.,"SELECT p.city, p.description FROM projects p JOIN sites s ON s.project_id = p.id WHERE s.name_2 = 'MAT_Avoisinants';","SELECT p.city, p.description
+FROM projects p
+INNER JOIN sites s ON p.id = s.project_id
+WHERE s.name_2 = 'MAT_Avoisinants';",True,
+78,Advanced Relational Joins,List all configurations for gateways that are located in the 'Europe/Paris' time zone.,SELECT c.* FROM configs c JOIN gateways g ON c.gateway_id = g.id WHERE g.time_zone = 'Europe/Paris';,"SELECT c.*
+FROM configs c
+JOIN gateways g ON c.gateway_id = g.id
+WHERE g.time_zone = 'Europe/Paris';",True,
+79,Advanced Relational Joins,Get the average operating rate of sites belonging to the client 'LIGAM'.,SELECT AVG(s.operating_rate) FROM sites s JOIN projects p ON s.project_id = p.id WHERE p.client_company_name = 'LIGAM';,"SELECT AVG(s.operating_rate::numeric)
+FROM sites s
+JOIN projects p ON s.project_id = p.id
+WHERE p.client_company_name = 'LIGAM';",True,
+80,Advanced Relational Joins,Find all projects that have a registered gateway using 'FTP' protocol.,SELECT DISTINCT p.name FROM projects p JOIN sites s ON s.project_id = p.id JOIN gateways g ON g.site_id = s.id_1 WHERE g.transfer_protocol = 'FTP';,"SELECT DISTINCT p.id, p.name, p.country, p.client_company_name, p.time_zone, p.city, p.start_date, p.description
+FROM projects p
+INNER JOIN sites s ON s.project_id = p.id
+INNER JOIN gateways g ON g.site_id = s.id_1
+WHERE g.transfer_protocol = 'FTP';",True,
