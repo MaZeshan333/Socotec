@@ -1,7 +1,7 @@
 import os
 import psycopg2
 from dotenv import load_dotenv
-import io  # 用于处理内存中的文本流
+import io  # Used for handling in-memory text streams
 
 load_dotenv()
 
@@ -16,7 +16,7 @@ def get_connection():
 
 def clear_and_import():
     NEW_DIR = 'New'
-    LIMIT = 30  # 设定导入行数限制
+    LIMIT = 30  # Set import row limit
     
     import_tasks = [
         ('projects.csv', 'projects'),
@@ -31,28 +31,28 @@ def clear_and_import():
     cur = conn.cursor()
 
     try:
-        # 1. 预处理
+        # 1. Preprocessing
         cur.execute("SET DateStyle = 'ISO, DMY';")
 
-        # 2. 清理
-        print("清理数据库表中...")
+        # 2. Cleanup
+        print("Cleaning database tables...")
         all_tables = [t[1] for t in import_tasks]
         cur.execute(f"TRUNCATE TABLE {', '.join(all_tables)} RESTART IDENTITY CASCADE;")
         
-        # 3. 导入（仅限前 30 行）
+        # 3. Import (only first LIMIT rows)
         for file_name, table_name in import_tasks:
             file_path = os.path.join(NEW_DIR, file_name)
             if not os.path.exists(file_path):
-                print(f"跳过不存在的文件: {file_name}")
+                print(f"Skipping non-existent file: {file_name}")
                 continue
 
-            print(f"正在导入 {table_name} (限前 {LIMIT} 行)...")
+            print(f"Importing {table_name} (limited to first {LIMIT} rows)...")
             
             with open(file_path, 'r', encoding='utf-8') as f:
-                # 获取表头
+                # Get header
                 header_line = f.readline().strip()
                 
-                # 读取接下来的 LIMIT 行数据
+                # Read the next LIMIT lines of data
                 lines = [header_line + '\n']
                 for _ in range(LIMIT):
                     line = f.readline()
@@ -60,18 +60,18 @@ def clear_and_import():
                         break
                     lines.append(line)
                 
-                # 将收集到的行转换为内存中的文件对象 (StringIO)
+                # Convert collected lines into an in-memory file object (StringIO)
                 limited_data = io.StringIO(''.join(lines))
                 
-                # 执行导入
+                # Execute import
                 sql = f"COPY {table_name} ({header_line}) FROM STDIN WITH CSV HEADER"
                 cur.copy_expert(sql, limited_data)
         
         conn.commit()
-        print("\n部分数据导入成功！")
+        print("\nPartial data import successful!")
 
     except Exception as e:
-        print(f"\n导入失败: {e}")
+        print(f"\nImport failed: {e}")
         conn.rollback()
     finally:
         cur.close()
